@@ -6,14 +6,19 @@ on:
       - '.gitmodules'
       - 'third_party/wegert'
       - 'teleman-riemann-surface/**'
+      - '!teleman-riemann-surface/wegert-k-loop.mp4'
       - '.github/workflows/teleman-wegert-loop.yml'
   pull_request:
     paths:
       - '.gitmodules'
       - 'third_party/wegert'
       - 'teleman-riemann-surface/**'
+      - '!teleman-riemann-surface/wegert-k-loop.mp4'
       - '.github/workflows/teleman-wegert-loop.yml'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   render:
@@ -33,3 +38,14 @@ jobs:
         with:
           name: teleman-wegert-k-loop
           path: teleman-riemann-surface/wegert-k-loop.mp4
+      - name: Commit rendered movie to this branch
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -f teleman-riemann-surface/wegert-k-loop.mp4
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'Add rendered Wegert k-loop [skip ci]'
+          git push origin HEAD:${GITHUB_REF_NAME}
