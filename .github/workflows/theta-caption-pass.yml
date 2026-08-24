@@ -1,8 +1,8 @@
 name: theta-caption-pass
 
 on:
-  push:
-    branches: [theta-notes]
+  pull_request:
+    branches: [main]
 
 jobs:
   captions:
