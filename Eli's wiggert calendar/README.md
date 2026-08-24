@@ -19,7 +19,7 @@ Official source and downloads for all editions:
 
 Author-uploaded searchable copies of many editions are also available from Elias Wegert and the other calendar authors on ResearchGate. These are useful for research, but the TU Freiberg/author copy remains the provenance source.
 
-Do **not** vendor the calendar PDFs or extracted calendar artwork in this repository until the reuse terms for that material have been established. For now, link to the official copies and make our own renders, diagrams, narration, and notes.
+Do **not** vendor the calendar PDFs or extracted calendar artwork in this repository until the reuse terms for that material have been established. For now, link to the official copies and make our own renders, diagrams, narration, and notes. Accurate written descriptions of the pictured mathematical construction are useful precisely because they let us build an independent video render without copying the calendar artwork.
 
 Private correspondence is intentionally not committed here.
 
@@ -78,15 +78,17 @@ A month may yield several independent videos. The calendar's month/year is metad
 - [2018](2018.md) — twelve month-by-month lesson seeds.
 - [2017](2017.md) — twelve month-by-month lesson seeds.
 - [2016](2016.md) — twelve month-by-month lesson seeds.
-- [2015](2015.md) — complete month/person order with exact known topics; several pictured formulas remain explicitly marked for direct-page audit.
-- [2014](2014.md) — complete month/person order with exact known topics; several pictured formulas remain explicitly marked for direct-page audit.
+- [2015](2015.md) — all twelve topics identified; formerly missing February–May, August–September and December constructions now have formula/object descriptions, source-page trails and explicit reproduction limits where the calendar omits data.
+- [2014](2014.md) — all twelve topics identified; former exact-picture placeholders resolved, with omitted interpolation/quadrature/weight/image data recorded rather than invented.
 - [2013](2013.md) — twelve month-by-month lesson seeds from the author-posted calendar text.
-- [2012](2012.md) — five rows recovered from direct/cross-calendar source evidence; seven months deliberately left as source-audit gaps rather than guessed.
+- [2012](2012.md) — all twelve months identified; the seven former gaps now have exact constructions, source-page references and render directions.
 - [2011](2011.md) — twelve month-by-month lesson seeds from the first calendar.
 
 ### Current audit status
 
-The catalog now covers the full 2011–2024 run at the year level. The remaining old-calendar source work is deliberately visible rather than hidden: seven 2012 pages still need direct recovery, and parts of 2014–2015 need their exact pictured formulas/parameters and original bibliography copied from the external calendar. Those rows should not be scripted as if the image-level audit were complete.
+The specific old-calendar gaps that motivated the 2012/2014/2015 audit are now resolved at the topic/formula level. This does **not** mean every calendar portrait can be reproduced exactly: several source pages omit data such as interpolation nodes, singular-inner weights, Schwarz quadrature endpoints/weights, decorative Runge-image boundaries, or RBF node coordinates. Those omissions are recorded as reproduction limits instead of being guessed.
+
+The calendar PDFs and artwork remain external. Repository text may describe the mathematical image accurately and link its source page; video work should render the mathematics independently.
 
 ## Editorial rule
 
