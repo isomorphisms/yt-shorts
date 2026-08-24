@@ -69,18 +69,18 @@ jobs:
           path: .grease
           submodules: recursive
       - name: Install media tools
-        shell: ./.grease/source/bin/ysh {0}
+        shell: ${{ github.workspace }}/.grease/source/bin/ysh {0}
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg jq curl
       - name: Exercise uploader under Grease
-        shell: ./.grease/source/bin/ysh {0}
+        shell: ${{ github.workspace }}/.grease/source/bin/ysh {0}
         run: |
           mkdir -p /tmp/yt-shorts-ci
           ffmpeg -hide_banner -loglevel error \
             -f lavfi -i color=c=black:s=1080x1920:d=1 \
             -pix_fmt yuv420p -y /tmp/yt-shorts-ci/test.mp4
-          ./.grease/source/bin/ysh ci/youtube_upload.ysh \
+          ${{ github.workspace }}/.grease/source/bin/ysh ci/youtube_upload.ysh \
             --video /tmp/yt-shorts-ci/test.mp4 \
             --title 'CI smoke test' \
             --description 'Local validation only' \
@@ -103,13 +103,13 @@ jobs:
           path: .grease
           submodules: recursive
       - name: Install media tools
-        shell: ./.grease/source/bin/ysh {0}
+        shell: ${{ github.workspace }}/.grease/source/bin/ysh {0}
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg jq curl
       - name: Validate or upload Short
         id: youtube
-        shell: ./.grease/source/bin/ysh {0}
+        shell: ${{ github.workspace }}/.grease/source/bin/ysh {0}
         env:
           VIDEO_PATH: ${{ inputs.video_path }}
           VIDEO_TITLE: ${{ inputs.title }}
@@ -123,7 +123,7 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
           if test "$PUBLISH" = 'true'; then
-            ./.grease/source/bin/ysh ci/youtube_upload.ysh \
+            ${{ github.workspace }}/.grease/source/bin/ysh ci/youtube_upload.ysh \
               --video "$VIDEO_PATH" \
               --title "$VIDEO_TITLE" \
               --description "$VIDEO_DESCRIPTION" \
@@ -131,7 +131,7 @@ jobs:
               --category-id "$CATEGORY_ID" \
               --made-for-kids "$MADE_FOR_KIDS"
           else
-            ./.grease/source/bin/ysh ci/youtube_upload.ysh \
+            ${{ github.workspace }}/.grease/source/bin/ysh ci/youtube_upload.ysh \
               --video "$VIDEO_PATH" \
               --title "$VIDEO_TITLE" \
               --description "$VIDEO_DESCRIPTION" \
