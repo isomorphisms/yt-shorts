@@ -8,17 +8,35 @@ Keep the diameter fixed, move the third vertex continuously along the semicircle
 
 The animation is an original parametric reconstruction. No C82 diagram, HTML/CSS, Joyce diagram, or Slyusarev implementation is copied into the scene.
 
+## Languages
+
+The episode source follows the repository's project-language rule:
+
+- `scene.pi` is **Ithon** source;
+- `render` is **Grease/YSH** glue;
+- do not replace either with Python or Bash merely because Manim examples commonly use them.
+
+Ithon is intentionally the language-facing layer for the Manim API here. The render entry point follows the same `#!/usr/bin/env ysh` Grease convention used elsewhere in the user's repositories.
+
 ## Reproduce
 
-From the repository root, with Docker installed:
+The render environment needs:
 
-```sh
-bash './Oliver Byrne/episodes/B3-P31/render.sh'
+- Grease/YSH (`ysh`);
+- an `ithon` executable on `PATH`;
+- Manim Community **0.19.1** available to that Ithon runtime, including its Cairo rendering dependencies.
+
+From the repository root:
+
+```text
+ysh './Oliver Byrne/episodes/B3-P31/render'
 ```
 
-The script pins the Manim Community Docker image to `v0.19.1` and renders with the Cairo renderer at 1080×1920, 30 fps. Generated media stays under this episode's ignored `media/` directory; the PR carries the source, not a binary video.
+`scene.pi` checks the Manim version itself and renders at 1080×1920, 30 fps with Cairo. Generated media stays under this episode's ignored `media/` directory; the PR carries source, not a binary video.
 
-Expected scene length is about 8.8 seconds. The CI workflow uploads the rendered MP4 as `byrne-iii31-preview` so the production contract can be judged from the actual output.
+Expected scene length is about 8.8 seconds.
+
+The original contract test was rendered successfully before the source-language cleanup. That proved the visual/mathematical contract, but it does **not** count as validation of the present Ithon/Grease source. The temporary Bash/Python CI harness used for that test was removed rather than preserved as a hidden dependency. A future automated render should execute this same Ithon/Grease entry point.
 
 ## Geometry
 
