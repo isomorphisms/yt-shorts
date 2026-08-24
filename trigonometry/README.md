@@ -11,6 +11,7 @@ This folder is a source and experiment notebook for **original visual YouTube Sh
 - [Reflections on phase](reflections-on-phase.md) — connect horizontal wave shifts, rotating phasors, electricity, and light; includes the 1893 Steinmetz historical anchor and the `j`-as-quarter-period viewpoint.
 - [Albrecht Dürer](albrecht-durer.md) — geometry, measurement, and perspective constructions from *Underweysung der Messung*; use the historical diagrams as sources and reconstruct the geometry cleanly.
 - [Eli Maor — Trigonometric Delights](trigonometric-delights-eli-maor.md) — chapter queue for later source-grounded Shorts rather than one generic “history of trigonometry” video.
+- [Wikipedia / Wikimedia Commons source images](wikipedia-images/ATTRIBUTION.md) — the open-source figures used by the English Wikipedia trigonometry article, kept as visual starting points with creator, revision-history, and license attribution.
 
 ## Production rule
 
