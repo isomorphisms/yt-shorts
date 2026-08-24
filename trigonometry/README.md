@@ -8,6 +8,7 @@ This folder is a source and experiment notebook for **original visual YouTube Sh
 - [Squaring a shed](squaring-a-shed.md) — turn a small angular error at a corner into a measurable mismatch between the two diagonals.
 - [Cars on a road at different angles](cars-at-road-angles.md) — keep the cars at 55 mph and rotate the road away from perpendicular to the viewer; separate the across-view and toward/away components.
 - [Electricity](electricity.md) — practical sine/cosine examples from AC voltage, phase difference, and power factor.
+- [Reflections on phase](reflections-on-phase.md) — connect horizontal wave shifts, rotating phasors, electricity, and light; includes the 1893 Steinmetz historical anchor and the `j`-as-quarter-period viewpoint.
 - [Albrecht Dürer](albrecht-durer.md) — geometry, measurement, and perspective constructions from *Underweysung der Messung*; use the historical diagrams as sources and reconstruct the geometry cleanly.
 - [Eli Maor — Trigonometric Delights](trigonometric-delights-eli-maor.md) — chapter queue for later source-grounded Shorts rather than one generic “history of trigonometry” video.
 
