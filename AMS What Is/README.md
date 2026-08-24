@@ -34,16 +34,11 @@ The actual **“What Is…?”** column consists of short explanations of a focu
 
 ## “Torus by Eli something”
 
-**Best-supported match: J. Elisenda (“Eli”) Grigsby, “Braids, Surfaces, and Homological Invariants.”**
+**Resolved: Ezra Miller, “What Is…a Toric Variety?”**
 
-The evidence is strong enough to resolve the earlier ambiguity:
+The remembered author fragment was fuzzy; the source was Miller’s May 2008 **“What Is…?”** article on toric varieties. That also fits the original browsing context exactly because it is an actual entry in the AMS column indexed by Armin Straub.
 
-- Grigsby is publicly known as **Eli Grigsby**.
-- Her *Notices* article contains an explicit torus-knot example: Figure 2 is a braided surface bounded by a **(3,4)-torus knot**.
-- The surrounding remembered sources are low-dimensional-topology/Floer pieces. Joshua Greene’s later AMS Conant Prize response for his **“Heegaard Floer homology”** article explicitly thanks **Eli Grigsby**, which ties the adjacent Greene memory directly to that name.
-- Ezra Miller’s **“What Is…a Toric Variety?”** remains the relevant actual “What Is…?” article and is genuinely about tori/toric geometry, but its author-name clue does not match “Eli.” It should stay in the folder as its own source, not as the best identification of the remembered item.
-
-So the likely memory was a *Notices* topology article with a conspicuous torus-knot visual, folded together with the nearby “What Is…?” browsing context—not a “What Is…?” article literally titled “torus.”
+J. Elisenda Grigsby’s *Notices* topology sampler remains useful separately and does contain a prominent `(3,4)`-torus-knot example, but it was not the source being remembered.
 
 ## Working rule for later Shorts
 
