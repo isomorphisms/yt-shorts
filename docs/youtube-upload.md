@@ -50,6 +50,13 @@ After `.github/workflows/youtube-upload.yml` is on the default branch, open **Ac
 - `made_for_kids`: explicit true/false declaration
 - `publish`: leave false for validation only; set true to actually upload
 
+The first existing render that can use this is:
+
+- `source_ref`: `teleman-wegert-k-loop`
+- `video_path`: `teleman-riemann-surface/wegert-k-loop.mp4`
+
+That renderer currently produces a 720x720, 14-second MP4, so it passes the uploader's square/vertical and duration checks.
+
 The workflow always performs a Grease smoke test. The upload job then checks out `source_ref` and validates the selected video's dimensions and duration. With `publish=false`, it stops after printing the metadata. With `publish=true`, it exchanges the refresh token for a short-lived access token, starts a resumable `videos.insert` upload, uploads the MP4, and records the resulting YouTube video ID and URL in the Actions summary.
 
 ## Private-only API projects
