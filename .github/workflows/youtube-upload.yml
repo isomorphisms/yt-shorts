@@ -1,5 +1,6 @@
 name: YouTube automation
 
+# PR/push runs are validation-only; publishing stays an explicit manual action.
 on:
   push:
     paths:
