@@ -1,6 +1,12 @@
 name: Byrne III.31 render
 
 on:
+  push:
+    branches:
+      - sources/oliver-byrne
+    paths:
+      - 'Oliver Byrne/episodes/B3-P31/**'
+      - '.github/workflows/byrne-iii31-render.yml'
   pull_request:
     paths:
       - 'Oliver Byrne/episodes/B3-P31/**'
