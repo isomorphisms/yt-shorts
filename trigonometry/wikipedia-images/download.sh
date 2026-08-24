@@ -9,7 +9,9 @@ download() {
     local url="$1"
     local name="$2"
     printf 'downloading %s\n' "$name"
-    curl --fail --location --retry 3 --retry-delay 2 --output "$assets/$name" "$url"
+    curl --fail --location --retry 3 --retry-delay 2 \
+      --user-agent 'isomorphisms/yt-shorts Wikimedia source-image snapshot' \
+      --output "$assets/$name" "$url"
 }
 
 download 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Head_of_Hipparchus_%28cropped%29.jpg' 'Head of Hipparchus (cropped).jpg'
