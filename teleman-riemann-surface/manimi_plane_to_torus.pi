@@ -1,0 +1,163 @@
+"""
+Design-only Manimi/Ithon scene skeleton for the Teleman plane → torus shot.
+
+DO NOT RENDER THIS YET.
+
+This file records the scene boundary and dependency seams without pretending
+that unfinished Manimi, Wegert, and Ithon APIs already exist.
+
+Blocking work:
+- isomorphisms/yt-shorts#4  Manimi textured lattice / quotient geometry
+- isomorphisms/wegert#19    renderer-independent Wegert coloring core
+- isomorphisms/ithon#4      first real Manimi WebGPU frame under Ithon
+
+Mathematical guardrail:
+The repeated plane here is NOT a tiled copy of the existing raw z-plane plot
+of sqrt((z^2 - 1)(z^2 - k^2)).  It is the uniformizing u-plane of
+
+    w^2 = (z^2 - 1)(z^2 - k^2),
+
+with u = integral dz / w and period lattice Lambda = <omega_1, omega_2>.
+The texture must be evaluated from a single-valued elliptic function on that
+u-plane, so the repetitions shown by the camera are genuine translations by
+periods.
+"""
+
+from manimlib import Scene
+
+
+class TelemanUniformizationToTorus(Scene):
+    """Storyboard-shaped scaffold; implementation deliberately blocked."""
+
+    def construct(self ∈ TelemanUniformizationToTorus) → None:
+        self.require_unfinished_dependencies()
+
+        # 1. Begin close on a genuinely periodic Wegert-colored u-plane.
+        cover = self.make_uniformizing_wegert_plane()
+        self.add(cover)
+
+        # 2. Zoom out until translated repeats become visually obvious.
+        self.zoom_out_to_reveal_periodicity(cover)
+
+        # 3. Sketch the rank-2 period lattice over the revealed repetitions.
+        lattice = self.make_period_lattice(cover)
+        self.draw_period_lattice(lattice)
+
+        # 4. Select one fundamental parallelogram while neighboring copies
+        #    remain faintly visible as context.
+        cell = self.make_fundamental_cell(cover, lattice)
+        self.highlight_fundamental_cell(cell, lattice)
+
+        # 5. Mark the two pairs of opposite edges with stable UV meaning.
+        edge_marks = self.make_edge_identifications(cell)
+        self.show_edge_identifications(edge_marks)
+
+        # 6. First quotient: glue one edge pair to obtain a cylinder.
+        cylinder = self.wrap_cell_to_cylinder(cell, edge_marks)
+
+        # 7. Second quotient: glue the remaining boundary circles to obtain
+        #    the ordinary embedded torus used for visualization.
+        torus = self.wrap_cylinder_to_torus(cylinder, edge_marks)
+
+        # 8. End on a slow 3-D rotation.  The Wegert texture must remain locked
+        #    to the same u mod Lambda coordinates throughout the whole shot.
+        self.orbit_finished_torus(torus)
+
+    def require_unfinished_dependencies(self ∈ TelemanUniformizationToTorus) → None:
+        raise RuntimeError(
+            "design skeleton only: blocked by yt-shorts#4, wegert#19, ithon#4"
+        )
+
+    # ------------------------------------------------------------------
+    # Mathematical source data
+    # ------------------------------------------------------------------
+
+    def make_uniformization(self ∈ TelemanUniformizationToTorus):
+        """
+        Return the fixed-k elliptic-uniformization data used by the shot.
+
+        Required data:
+        - k;
+        - omega_1, omega_2;
+        - z(u) and/or w(u), single-valued and doubly periodic;
+        - a documented choice of which elliptic quantity Wegert colors.
+
+        Do not implement this as image tiling.
+        """
+        raise NotImplementedError("choose and implement the actual elliptic uniformization")
+
+    def make_uniformizing_wegert_plane(self ∈ TelemanUniformizationToTorus):
+        """
+        Build a textured plane parameterized by u in C.
+
+        The color at u comes from Wegert's production coloring core applied to
+        the chosen elliptic function at u.  Translation by omega_1 or omega_2
+        must reproduce the same value/color up to numerical tolerance.
+        """
+        raise NotImplementedError("depends on wegert#19 and uniformization data")
+
+    # ------------------------------------------------------------------
+    # Covering-plane reveal
+    # ------------------------------------------------------------------
+
+    def zoom_out_to_reveal_periodicity(self ∈ TelemanUniformizationToTorus, cover) → None:
+        """Animate camera scale only; do not scale the mathematical lattice."""
+        raise NotImplementedError("camera choreography")
+
+    def make_period_lattice(self ∈ TelemanUniformizationToTorus, cover):
+        """Build lattice points/segments from omega_1 and omega_2."""
+        raise NotImplementedError("depends on Manimi lattice overlay boundary")
+
+    def draw_period_lattice(self ∈ TelemanUniformizationToTorus, lattice) → None:
+        """Draw omega_1, omega_2, then faint translated parallelogram lines."""
+        raise NotImplementedError("depends on yt-shorts#4")
+
+    # ------------------------------------------------------------------
+    # Fundamental domain and quotient cues
+    # ------------------------------------------------------------------
+
+    def make_fundamental_cell(self ∈ TelemanUniformizationToTorus, cover, lattice):
+        """Return one textured fundamental parallelogram with stable UVs."""
+        raise NotImplementedError("depends on yt-shorts#4")
+
+    def highlight_fundamental_cell(self ∈ TelemanUniformizationToTorus, cell, lattice) → None:
+        """Brighten one cell and fade neighboring repeats without retessellating."""
+        raise NotImplementedError("storyboard beat 4")
+
+    def make_edge_identifications(self ∈ TelemanUniformizationToTorus, cell):
+        """
+        Return persistent cues for the two opposite-edge pairs.
+
+        Cues must refer to actual corresponding texture coordinates, not merely
+        to decorative colors painted on the geometry.
+        """
+        raise NotImplementedError("depends on yt-shorts#4")
+
+    def show_edge_identifications(self ∈ TelemanUniformizationToTorus, edge_marks) → None:
+        raise NotImplementedError("storyboard beat 5")
+
+    # ------------------------------------------------------------------
+    # Flat → cylinder → torus
+    # ------------------------------------------------------------------
+
+    def wrap_cell_to_cylinder(self ∈ TelemanUniformizationToTorus, cell, edge_marks):
+        """
+        Identify the first period while preserving the texture coordinates.
+
+        Preferred: continuous 3-D bend.
+        Allowed fallback: editorial cut to a cylinder with exact UV continuity.
+        """
+        raise NotImplementedError("depends on textured quotient geometry in yt-shorts#4")
+
+    def wrap_cylinder_to_torus(self ∈ TelemanUniformizationToTorus, cylinder, edge_marks):
+        """
+        Identify the second period and return an embedded torus.
+
+        The donut shape is an embedding used to display C/Lambda.  It is not a
+        claim that the raw z-plane has literally been rolled into a torus.
+        """
+        raise NotImplementedError("depends on textured quotient geometry in yt-shorts#4")
+
+    def orbit_finished_torus(self ∈ TelemanUniformizationToTorus, torus) → None:
+        """Slow final three-quarter camera orbit; no explanatory text blanket."""
+        raise NotImplementedError("final camera beat")
