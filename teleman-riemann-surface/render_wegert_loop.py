@@ -14,8 +14,13 @@ WEGERT_COLOR_CORE = (
 OUT = Path(__file__).resolve().parent / "wegert-k-loop.mp4"
 W = H = 720
 FPS = 30
-SECONDS = 7
+HOLD_SECONDS = 6
+ZOOM_SECONDS = 8
+SECONDS = HOLD_SECONDS + ZOOM_SECONDS
 FRAMES = FPS * SECONDS
+K_PERIOD_SECONDS = 7
+START_HALF_HEIGHT = 1.35
+END_HALF_HEIGHT = 6.0
 
 # Wegert owns the domain-coloring map. This renderer owns only the mathematical
 # function being evaluated. In particular, it does not represent Teleman's
@@ -77,22 +82,19 @@ void main() {
     vec2 value = teleman_value(z, u_theta);
     vec3 color = wegert_color_complex(value);
 
-    // Parameter guide only: one visible k moves around |k|=1.  This is not
+    // Parameter guide only: one visible k moves around |k|=1. This is not
     // Wegert's zero/pole UI and does not alter the function evaluation above.
+    // Keep the guide about one screen pixel wide as the camera zooms out.
     float world_per_pixel = (2.0 * u_half_height) / max(u_resolution.y, 1.0);
     float unit_circle_pixels = abs(length(z) - 1.0) / world_per_pixel;
-    float guide_mix = 0.42 * (1.0 - smoothstep(0.8, 1.8, unit_circle_pixels));
-    vec3 marker_dark = vec3(0.08);
-    vec3 marker_light = vec3(0.97, 0.96, 0.93);
-    color = mix(color, marker_dark, guide_mix);
+    float guide_mix = 0.78 * (1.0 - smoothstep(0.55, 1.35, unit_circle_pixels));
+    color = mix(color, vec3(1.0), guide_mix);
 
+    // A small plain white point with a dark rim. No bullseye or zero marker.
     vec2 k = vec2(cos(u_theta), sin(u_theta));
     float k_radius_pixels = length(z - k) / world_per_pixel;
-    if (k_radius_pixels < 7.0) {
-        color = k_radius_pixels < 4.8 ? marker_light : marker_dark;
-    }
-    if (k_radius_pixels < 1.8) {
-        color = marker_dark;
+    if (k_radius_pixels < 5.2) {
+        color = k_radius_pixels < 3.6 ? vec3(1.0) : vec3(0.06);
     }
 
     frag_color = vec4(color, 1.0);
@@ -196,6 +198,25 @@ def compile_shader(kind, text):
     return shader
 
 
+def smoothstep01(value: float) -> float:
+    value = min(max(value, 0.0), 1.0)
+    return value * value * (3.0 - 2.0 * value)
+
+
+def camera_half_height(frame: int) -> float:
+    elapsed = frame / FPS
+    if elapsed <= HOLD_SECONDS:
+        return START_HALF_HEIGHT
+
+    zoom_fraction = smoothstep01((elapsed - HOLD_SECONDS) / ZOOM_SECONDS)
+    # Interpolate logarithmically so the apparent zoom speed is smooth rather
+    # than spending most of the shot at the wide end.
+    return math.exp(
+        math.log(START_HALF_HEIGHT)
+        + zoom_fraction * (math.log(END_HALF_HEIGHT) - math.log(START_HALF_HEIGHT))
+    )
+
+
 display = eglGetDisplay(EGL_DEFAULT_DISPLAY)
 major = C.c_int()
 minor = C.c_int()
@@ -268,7 +289,6 @@ locations = {name: uniform(name) for name in (
     "u_center", "u_half_height", "u_aspect", "u_resolution", "u_theta",
 )}
 glUniform2f(locations["u_center"], 0.0, 0.0)
-glUniform1f(locations["u_half_height"], 1.35)
 glUniform1f(locations["u_aspect"], 1.0)
 glUniform2f(locations["u_resolution"], W, H)
 glViewport(0, 0, W, H)
@@ -283,8 +303,10 @@ ffmpeg = subprocess.Popen([
 
 pixels = (C.c_ubyte * (W * H * 4))()
 for frame in range(FRAMES):
-    theta = 2.0 * math.pi * frame / FRAMES
+    elapsed = frame / FPS
+    theta = 2.0 * math.pi * elapsed / K_PERIOD_SECONDS
     glUniform1f(locations["u_theta"], theta)
+    glUniform1f(locations["u_half_height"], camera_half_height(frame))
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
     glFinish()
     glReadPixels(0, 0, W, H, GL_RGBA, GL_UNSIGNED_BYTE, pixels)
