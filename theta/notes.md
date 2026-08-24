@@ -1,5 +1,9 @@
 # Theta Short notes
 
+## △ DUNCE CAP — STUPID-MODE NOTES
+
+> **WARNING:** The specific Short suggestions below were added while ChatGPT was in "stupid mode." Treat them as provisional placeholders, not as good editorial recommendations. They need to be revisited later with a careful pass through the actual source video, preferably from its transcript/timestamps, looking for genuinely missing drawings, concrete drawable objects/examples, and questions the lecturer actually raises.
+
 Working notes for Black Ball YouTube Shorts built around the theta-function material.
 
 The basic format is one mathematical question, one visible answer, and only as much narration as the picture needs. Prefer the actual app or renderer, with freeze frames and simple drawn arrows/circles/loops when they clarify what is happening.
