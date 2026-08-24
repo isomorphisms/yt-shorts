@@ -18,7 +18,9 @@ for command_name in awk cc cp grep mkdir mktemp mv sed; do
 done
 
 tmp_dir=$(mktemp -d)
-trap 'rm -rf "$tmp_dir"' EXIT
+trap --add EXIT {
+  rm -rf "$tmp_dir"
+}
 aici_bin="$tmp_dir/aici"
 cc -std=c17 -Wall -Wextra -Werror -pedantic -O2 -o "$aici_bin" "$aici_source"
 
