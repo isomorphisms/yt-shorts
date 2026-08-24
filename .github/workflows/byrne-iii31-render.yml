@@ -1,0 +1,30 @@
+name: Byrne III.31 render
+
+on:
+  pull_request:
+    paths:
+      - 'Oliver Byrne/episodes/B3-P31/**'
+      - '.github/workflows/byrne-iii31-render.yml'
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render vertical preview
+        run: bash 'Oliver Byrne/episodes/B3-P31/render.sh'
+      - name: Locate render
+        id: video
+        shell: bash
+        run: |
+          video="$(find 'Oliver Byrne/episodes/B3-P31/media' -type f -name 'byrne-iii-31.mp4' -print -quit)"
+          test -n "$video"
+          echo "path=$video" >> "$GITHUB_OUTPUT"
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: byrne-iii31-preview
+          path: ${{ steps.video.outputs.path }}
+          if-no-files-found: error
