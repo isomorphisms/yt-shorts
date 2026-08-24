@@ -13,6 +13,11 @@ on:
       - '.github/workflows/youtube-upload.yml'
   workflow_dispatch:
     inputs:
+      source_ref:
+        description: Branch, tag, or commit containing the rendered MP4
+        required: true
+        default: main
+        type: string
       video_path:
         description: Repository-relative path to rendered MP4
         required: true
@@ -94,7 +99,10 @@ jobs:
     needs: smoke
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout requested render ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref }}
       - name: Checkout Grease
         uses: actions/checkout@v4
         with:
