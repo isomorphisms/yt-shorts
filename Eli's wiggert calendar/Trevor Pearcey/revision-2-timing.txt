@@ -1,6 +1,0 @@
-Total target: about 20–22 s
-Zoom-out: finish by about 5–6 s
-Natural full-field hold: at least 5 s
-Overlay introduction: after clean hold
-Overlay style: dashed + explicit label
-No bottom interval/pinch bar
