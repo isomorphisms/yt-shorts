@@ -34,21 +34,29 @@ Status: `locator-only` until the exact passages/figures are checked.
 
 ## A Panoramic View of Riemannian Geometry
 
-Marcel Berger, Springer, 2003.  
+Marcel Berger, Springer, 2003, XXIII + 824 pages.  
 Source: https://link.springer.com/book/10.1007/978-3-642-18245-7
 
-The opening chapter is especially promising because it starts from old/new Euclidean geometry before the machinery of Riemannian geometry. The publisher contents place that chapter at pp. 1–99. More detailed contents/previews put several useful elementary topics near the beginning.
+This is a major source for the project, not just another book in the bibliography. Berger deliberately moves from concrete Euclidean and surface geometry into the modern Riemannian subject, and the detailed contents expose dozens of picture-sized entry points.
 
-Candidate fragments to page-audit:
+Dedicated source map: [a-panoramic-view-of-riemannian-geometry.md](a-panoramic-view-of-riemannian-geometry.md)
 
-- first variation of length and the billiard/reflection law;
-- curvature of a plane curve;
-- the four-vertex theorem;
-- the transition from Euclidean distance questions to intrinsic geometry;
-- later sections on the geometric meaning of sectional and Ricci curvature;
-- geodesic flow.
+Among the strongest early locators are:
 
-Status: `locator-only`; verify exact internal page numbers against the book before scripting.
+- first variation and billiards (p. 4);
+- plane-curve curvature (p. 12);
+- four-vertex theorem (p. 20);
+- heat shrinking of plane curves (p. 24);
+- inner geometry and geodesics (pp. 30–33);
+- principal curvatures and the sign of Gaussian curvature (pp. 45–52);
+- minimal surfaces (p. 58);
+- the isoperimetric inequality in E³ à la Gromov (p. 63);
+- shape of a drum / inverse spectral questions (pp. 78–83);
+- parallel transport, cut loci, bending and wrinkling (pp. 113–133).
+
+The later chapters provide similarly small entry points into triangle comparison, filling radius, systoles, spectra, nodal sets, periodic geodesics, best metrics, Ricci flow, Gromov's simplicial volume, Nabutovsky's metric-space landscape, and curvature-to-topology problems.
+
+Status: detailed TOC/page map recorded; page-level text/figure audits still required before scripting.
 
 ## Geometry I
 
@@ -97,6 +105,12 @@ Status: `locator-only`.
 
 ## Riemannian Geometry During the Second Half of the Twentieth Century
 
-Marcel Berger, University Lecture Series 17, AMS, 2000. This is more useful as a map of what to mine elsewhere than as the first source for animation. It surveys major streams including curvature/topology, distinguished metrics, Laplace spectra and geodesic flow.
+Marcel Berger, *Jahresbericht der Deutschen Mathematiker-Vereinigung* 100 (1998), 45–208; reprinted as AMS University Lecture Series 17 (2000).
 
-Use it to discover names/results, then go to the original paper or a more visual Berger treatment before making a Short.
+This also deserves to be mined directly. Berger organizes the post-1950 subject around curvature/topology, space forms, best metrics, spectra/eigenfunctions, and periodic geodesics/geodesic flow, but within those parts he repeatedly stops for smaller questions, comparisons, examples, historical pivots, and Gromov-related developments.
+
+Dedicated source map: [riemannian-geometry-during-the-second-half-of-the-twentieth-century.md](riemannian-geometry-during-the-second-half-of-the-twentieth-century.md)
+
+High-priority audit targets include Rauch and pinching, Berger's discussion of how to see the different curvatures, comparison geometry, the question whether curvature determines a metric, Cheeger–Gromov/Fukaya collapsing and thick/thin geometry, the search for a best metric, inverse spectral questions, and periodic-geodesic examples.
+
+Status: source map expanded; exact page/figure audits still required before scripting.
