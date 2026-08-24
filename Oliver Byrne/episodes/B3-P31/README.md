@@ -4,7 +4,7 @@ First production test of the Manim contract in `../../manim-production.md`.
 
 ## Point of the Short
 
-Keep the diameter fixed, move the third vertex continuously along the semicircle, and keep the right-angle marker/readout attached to the moving vertex. The Short is only testing the invariant in the first part of Euclid III.31; it does not expand into the acute/obtuse segment cases from the rest of the proposition.
+Keep the diameter fixed, move the third vertex continuously along the semicircle, and keep the right-angle marker/readout attached to the moving vertex. Red dotted perpendicular-bisector guides for the two moving chords pass through the circle center and cross each chord at its midpoint, so the underlying construction remains visible while the point moves. The Short is only testing the invariant in the first part of Euclid III.31; it does not expand into the acute/obtuse segment cases from the rest of the proposition.
 
 The animation is an original parametric reconstruction. No C82 diagram, HTML/CSS, Joyce diagram, or Slyusarev implementation is copied into the scene.
 
@@ -40,7 +40,7 @@ The original contract test was rendered successfully before the source-language 
 
 ## Geometry
 
-Let the diameter endpoints be fixed points `B` and `C` on a circle and let `A` move on the upper semicircle. Every frame recomputes `AB`, `AC`, and the right-angle marker from the current position of `A`. This is the first claim of III.31: the angle `BAC` in the semicircle is right.
+Let the diameter endpoints be fixed points `B` and `C` on a circle and let `A` move on the upper semicircle. Every frame recomputes `AB`, `AC`, the right-angle marker, and the two perpendicular-bisector guides from the current position of `A`. Each dotted guide runs from the circle center through the midpoint of one moving chord and a little beyond it, making the perpendicular-bisector construction explicit without turning the guide into another triangle edge. This is the first claim of III.31: the angle `BAC` in the semicircle is right.
 
 ## Sources and credit
 
