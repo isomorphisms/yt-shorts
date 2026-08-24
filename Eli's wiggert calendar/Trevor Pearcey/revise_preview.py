@@ -23,8 +23,11 @@ X_MIN, X_MAX = -6.0, 6.0
 Y_MIN, Y_MAX = -6.0, 3.0
 T_MAX = 3.0
 DT = 0.003
-BUILD_SECONDS = 10.0
+BUILD_SECONDS = 6.0
 UNIQUE_FPS = 15
+ZOOM_SECONDS = 5.5
+CAUSTIC_LABEL_SECONDS = 18.0
+CAUSTIC_CURVE_SECONDS = 19.0
 PRESENTATION_SECONDS = 23.0
 
 DEFINITION = r"$P(x,y)=\lim_{T\to\infty}\int_{-T}^{T} e^{i(t^4+y t^2+x t)}\,dt$"
@@ -292,7 +295,7 @@ def make_lower_video(directory: Path, width: int, scale: float):
             seconds = frame_number / UNIQUE_FPS
             frame = Image.new("RGBA", (width, band_height), (0, 0, 0, 255))
             draw_cutoff_overlay(frame, cutoff_for_time(seconds), width, scale, y0)
-            if seconds >= 18.0:
+            if seconds >= CAUSTIC_LABEL_SECONDS:
                 draw_caustic_label(frame, width, scale, y0)
             process.stdin.write(frame.convert("RGB").tobytes())
     finally:
@@ -348,7 +351,6 @@ def render(small: bool):
         output = SMALL_OUT
         source_scale = "scale=360:640,"
         crop = "crop=360:270:0:150"
-        zoom_frames = 82
         zoom_size = "360x270"
         pad = "pad=360:640:0:150:black"
         crf = "24"
@@ -357,12 +359,12 @@ def render(small: bool):
         output = FULL_OUT
         source_scale = ""
         crop = "crop=720:540:0:300"
-        zoom_frames = 165
         zoom_size = "720x540"
         pad = "pad=720:1280:0:300:black"
         crf = "20"
 
     scale = width / 720.0
+    zoom_frames = round(ZOOM_SECONDS * fps)
     with tempfile.TemporaryDirectory(prefix="pearcey-v2-") as temporary:
         temporary_path = Path(temporary)
         formula, formula_y = make_formula(temporary_path, width, height, scale)
@@ -387,7 +389,7 @@ def render(small: bool):
             f"[base][formula]overlay=0:{formula_y}:eof_action=repeat[v1];"
             f"[v1][2:v]overlay=0:{lower_y}:eof_action=repeat[v2];"
             "[3:v]format=rgba[curve];"
-            f"[v2][curve]overlay=0:{curve_y}:enable='gte(t,19)':eof_action=repeat[v]"
+            f"[v2][curve]overlay=0:{curve_y}:enable='gte(t,{CAUSTIC_CURVE_SECONDS:g})':eof_action=repeat[v]"
         )
         subprocess.run(
             [

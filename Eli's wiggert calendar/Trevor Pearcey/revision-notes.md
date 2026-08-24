@@ -15,3 +15,5 @@ Next visual pass:
 - the viewer should first be able to decide that the cusp is present in the computed field, and only afterward see the mathematical curve laid over it.
 
 Timing direction: longer overall, faster early zoom-out, longer final hold.
+
+Current timing contract: the camera reaches the full field at 5.5 seconds, the cutoff reaches `T = 3.0` at 6 seconds, and both then hold still on the unmarked Wegert field until the caustic label at 18 seconds and dashed curve at 19 seconds.

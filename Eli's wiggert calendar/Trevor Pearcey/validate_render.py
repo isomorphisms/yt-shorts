@@ -100,9 +100,24 @@ def check_typography(revision) -> None:
 
     expect(
         revision.cutoff_for_time(0.0)
-        < revision.cutoff_for_time(5.0)
-        < revision.cutoff_for_time(10.0),
-        "displayed truncation cutoff does not grow through the build",
+        < revision.cutoff_for_time(3.0)
+        < revision.cutoff_for_time(5.5)
+        < revision.cutoff_for_time(6.0),
+        "displayed truncation cutoff does not keep moving through the tightened build",
+    )
+    expect(
+        revision.cutoff_for_time(6.0) == revision.T_MAX
+        and revision.cutoff_for_time(17.0) == revision.T_MAX,
+        "cutoff must reach T_MAX by 6 s and remain fixed during the natural-field hold",
+    )
+    expect(
+        revision.ZOOM_SECONDS < revision.BUILD_SECONDS <= 6.0,
+        "camera and cutoff should settle together without a long eased tail",
+    )
+    expect(
+        revision.CAUSTIC_LABEL_SECONDS == 18.0
+        and revision.CAUSTIC_CURVE_SECONDS == 19.0,
+        "delayed caustic label/curve timing changed",
     )
 
     source = REVISION_RENDERER.read_text()
@@ -173,8 +188,8 @@ def check_video_shape(path: Path, expected_width: int, expected_height: int, exp
            f"{path.name} is {fps:g} fps, expected {expected_fps:g}")
 
 
-def expected_field_at_8(scale: float) -> np.ndarray:
-    base = frame_at(BASE_VIDEO, 8.0)[300:840]
+def expected_field_at(seconds: float, scale: float) -> np.ndarray:
+    base = frame_at(BASE_VIDEO, seconds)[300:840]
     if scale == 1.0:
         return base
     resized = Image.fromarray(base).resize(
@@ -185,29 +200,37 @@ def expected_field_at_8(scale: float) -> np.ndarray:
 
 def check_timeline(path: Path, scale: float) -> tuple[np.ndarray, slice]:
     build_early = frame_at(path, 2.0)
-    build_late = frame_at(path, 8.0)
-    clean_early = frame_at(path, 12.5)
+    build_late = frame_at(path, 5.5)
+    settled_early = frame_at(path, 6.5)
     clean_late = frame_at(path, 17.0)
 
     field = slice(round(300 * scale), round(840 * scale))
     indicator = slice(round(930 * scale), round(1130 * scale))
     build_field_change = mean_difference(build_early[field], build_late[field])
     indicator_change = changed_pixels(build_early[indicator], build_late[indicator])
-    clean_field_drift = mean_difference(clean_early[field], clean_late[field])
-    sync_error = mean_difference(build_late[field], expected_field_at_8(scale))
+    clean_field_drift = mean_difference(settled_early[field], clean_late[field])
+    clean_indicator_drift = mean_difference(
+        settled_early[indicator], clean_late[indicator]
+    )
+    sync_error = mean_difference(
+        build_late[field], expected_field_at(5.5, scale)
+    )
 
     expect(build_field_change >= 1.0,
            f"{path.name}: Pearcey field barely changes while T grows ({build_field_change:.3f})")
     expect(indicator_change >= round(300 * scale * scale),
            f"{path.name}: interval/integral indicator does not visibly change ({indicator_change} pixels)")
     expect(clean_field_drift <= 2.25,
-           f"{path.name}: final field is still changing during the hold ({clean_field_drift:.3f})")
+           f"{path.name}: final field is still changing after 6 s ({clean_field_drift:.3f})")
+    expect(clean_indicator_drift <= 1.0,
+           f"{path.name}: cutoff indicator still crawls after 6 s ({clean_indicator_drift:.3f})")
     expect(sync_error <= (2.0 if scale == 1.0 else 3.5),
            f"{path.name}: displayed time/T is out of sync with the source field ({sync_error:.3f})")
 
     print(
         f"timeline {path.name}: build {build_field_change:.3f}; interval {indicator_change}; "
-        f"hold drift {clean_field_drift:.3f}; source sync {sync_error:.3f}"
+        f"hold drift {clean_field_drift:.3f}; indicator drift {clean_indicator_drift:.3f}; "
+        f"source sync {sync_error:.3f}"
     )
     return clean_late, field
 

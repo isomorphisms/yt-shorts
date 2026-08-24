@@ -28,8 +28,10 @@ FIELD_OUT_H = 540
 FIELD_TOP = 300
 FPS = 30
 UNIQUE_FPS = 15
-BUILD_SECONDS = 10
-HOLD_SECONDS = 2
+# Finish the cutoff as the camera settles, then keep an unmarked natural field
+# available to the presentation compositor until its delayed overlay.
+BUILD_SECONDS = 6
+HOLD_SECONDS = 6
 CUSP_SECONDS = 3
 T_MAX = 3.0
 DT = 0.003
