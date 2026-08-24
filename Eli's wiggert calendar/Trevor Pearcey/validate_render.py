@@ -24,10 +24,10 @@ def expect(condition: bool, message: str) -> None:
         failures.append(message)
 
 
-def load_base():
-    spec = importlib.util.spec_from_file_location("pearcey_base", BASE_RENDERER)
+def load_module(path: Path, name: str):
+    spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
-        raise RuntimeError("cannot load render_pearcey.py")
+        raise RuntimeError(f"cannot load {path.name}")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -64,6 +64,42 @@ def check_math(base) -> None:
         f"Pearcey T={base.T_MAX:g} representative-point error {max_error:.3g} exceeds 3e-4",
     )
     print(f"math: max representative-point error {max_error:.3g}")
+
+
+def check_typography(revision) -> None:
+    # The presentation should expose only the precision that is useful to a
+    # viewer, while keeping the mathematical sign and symmetry explicit.
+    expect(revision.display_t(1.14) == 1.1, "moving T readout is not rounded to one decimal")
+    expect(revision.display_t(1.16) == 1.2, "moving T readout does not advance by tenths")
+    expect(
+        revision.displayed_bounds(1.14) == ("−1.1", "1.1"),
+        "symmetric bounds must use U+2212 and one decimal: −1.1 to 1.1",
+    )
+    expect(
+        revision.displayed_bounds(1.16) == ("−1.2", "1.2"),
+        "symmetric bounds must advance with T: −1.2 to 1.2",
+    )
+    expect(
+        revision.cutoff_for_time(0.0) < revision.cutoff_for_time(5.0) < revision.cutoff_for_time(10.0),
+        "displayed truncation cutoff does not grow through the build",
+    )
+
+    source = REVISION_RENDERER.read_text()
+    for required in (
+        "T → ∞",
+        "−T",
+        "∫",
+        "t⁴",
+        "yt²",
+        "27x² + 8y³ = 0",
+        "CAUSTIC OVERLAY",
+        "draw_dashed_polyline",
+        "draw_cutoff_overlay",
+        "axis_y",
+    ):
+        expect(required in source, f"revised compositor is missing typography/overlay marker {required!r}")
+    expect("integration interval" not in source.lower(),
+           "interval indicator should be mathematical notation, not a prose control label")
 
 
 def probe(path: Path) -> tuple[float, int, int, float]:
@@ -125,28 +161,34 @@ def check_revision_sequence() -> None:
     if not FULL_VIDEO.is_file():
         return
 
+    build_early = frame_at(FULL_VIDEO, 2.0)
+    build_late = frame_at(FULL_VIDEO, 8.0)
     clean_early = frame_at(FULL_VIDEO, 12.5)
     clean_late = frame_at(FULL_VIDEO, 17.0)
     label_only = frame_at(FULL_VIDEO, 18.5)
     with_curve = frame_at(FULL_VIDEO, 19.5)
 
-    # The final natural field must actually sit still for several seconds.
-    clean_drift = mean_difference(clean_early, clean_late)
-    expect(clean_drift <= 0.75,
-           f"natural final hold is still changing (mean pixel drift {clean_drift:.3f})")
+    # The field and the interval indicator should both move while T grows.
+    field = slice(300, 840)
+    build_field_change = mean_difference(build_early[field, :, :], build_late[field, :, :])
+    expect(build_field_change >= 1.0,
+           f"Pearcey field barely changes while T grows ({build_field_change:.3f})")
+    indicator = slice(930, 1140)
+    indicator_change = changed_pixels(build_early[indicator], build_late[indicator])
+    expect(indicator_change >= 300,
+           f"moving interval/integral indicator does not visibly change ({indicator_change} pixels)")
 
-    # No old interval/pinch bar in the lower blank presentation area.
-    blank = clean_late[870:1160, :, :]
-    bright_fraction = float(np.mean(blank.mean(axis=2) > 80.0))
-    expect(bright_fraction < 0.005,
-           f"clean hold still contains a bottom control/bar ({100*bright_fraction:.2f}% bright pixels)")
+    # The final natural field should sit still for several seconds even though
+    # the final T=3.0 notation remains visible below it.
+    clean_field_drift = mean_difference(clean_early[field, :, :], clean_late[field, :, :])
+    expect(clean_field_drift <= 0.75,
+           f"natural final field is still changing (mean drift {clean_field_drift:.3f})")
 
     # At 18.5 s the label has appeared but the field itself must still be clean.
-    field = slice(300, 840)
     label_field_change = mean_difference(clean_late[field, :, :], label_only[field, :, :])
     expect(label_field_change <= 0.75,
            f"curve appears before its overlay label has had time to establish itself ({label_field_change:.3f})")
-    label_region_change = changed_pixels(clean_late[900:1060], label_only[900:1060])
+    label_region_change = changed_pixels(clean_late[1120:1260], label_only[1120:1260])
     expect(label_region_change >= 300,
            f"CAUSTIC OVERLAY label is not visibly present before the curve ({label_region_change} changed pixels)")
 
@@ -155,19 +197,17 @@ def check_revision_sequence() -> None:
     expect(curve_change >= 300,
            f"dashed caustic curve is not visibly added after the label ({curve_change} changed field pixels)")
 
-    # Basic typography contract for the revised compositor source.
-    source = REVISION_RENDERER.read_text()
-    for required in ("t⁴", "yt²", "27x² + 8y³ = 0", "CAUSTIC OVERLAY", "draw_dashed_polyline"):
-        expect(required in source, f"revised compositor is missing typography/overlay marker {required!r}")
-    expect("axis_y" not in source and "integration interval" not in source.lower(),
-           "revised compositor has reintroduced the interval bar")
-
-    print(f"sequence: clean drift {clean_drift:.3f}; label pixels {label_region_change}; curve pixels {curve_change}")
+    print(
+        f"sequence: build field {build_field_change:.3f}; interval pixels {indicator_change}; "
+        f"clean field drift {clean_field_drift:.3f}; label pixels {label_region_change}; curve pixels {curve_change}"
+    )
 
 
 def main() -> None:
-    base = load_base()
+    base = load_module(BASE_RENDERER, "pearcey_base")
+    revision = load_module(REVISION_RENDERER, "pearcey_revision")
     check_math(base)
+    check_typography(revision)
     check_revision_sequence()
     if failures:
         for failure in failures:
