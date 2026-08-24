@@ -25,6 +25,7 @@ privacy_status='private'
 category_id='27'
 made_for_kids='false'
 dry_run='false'
+ysh_bin=${YSH_BIN:-.grease/source/bin/ysh}
 
 while test "$#" -gt 0; do
   case "$1" in
@@ -68,15 +69,19 @@ if test -z "$short_dir"; then
   echo '--short-dir is required' >&2
   exit 2
 fi
+if ! test -x "$ysh_bin"; then
+  echo "Grease YSH not found: $ysh_bin" >&2
+  exit 2
+fi
 
-ci/short_release_check.ysh --short-dir "$short_dir"
+"$ysh_bin" ci/short_release_check.ysh --short-dir "$short_dir"
 
 video_path="$short_dir/short.mp4"
 title=$(cat "$short_dir/title.txt")
 description=$(cat "$short_dir/description.txt")
 
 if test "$dry_run" = 'true'; then
-  ci/youtube_upload.ysh \
+  "$ysh_bin" ci/youtube_upload.ysh \
     --video "$video_path" \
     --title "$title" \
     --description "$description" \
@@ -93,9 +98,9 @@ if test -z "$channel_id"; then
 fi
 
 # The credential is checked against the intended channel before any write.
-ci/youtube_check.ysh --channel-id "$channel_id"
+"$ysh_bin" ci/youtube_check.ysh --channel-id "$channel_id"
 
-ci/youtube_upload.ysh \
+"$ysh_bin" ci/youtube_upload.ysh \
   --video "$video_path" \
   --title "$title" \
   --description "$description" \
