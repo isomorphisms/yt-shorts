@@ -23,8 +23,6 @@ jobs:
   smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      PYTHONPATH: ${{ github.workspace }}/.grease/source:${{ github.workspace }}/.grease/source/vendor
     steps:
       - uses: actions/checkout@v4
       - name: Checkout Grease
@@ -34,6 +32,14 @@ jobs:
           ref: main
           path: .grease
           submodules: recursive
+      - name: Set up Grease Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '2.7'
+      - name: Build Grease dev runtime
+        run: |
+          cd .grease/source
+          build/py.sh minimal
       - name: Install media tools
         run: |
           sudo apt-get update
@@ -44,7 +50,7 @@ jobs:
           ffmpeg -hide_banner -loglevel error \
             -f lavfi -i color=c=black:s=1080x1920:d=1 \
             -pix_fmt yuv420p -y /tmp/yt-shorts-ci/test.mp4
-          python3 .grease/source/bin/oils_for_unix.py ysh ci/youtube_upload.ysh \
+          .grease/source/bin/ysh ci/youtube_upload.ysh \
             --video /tmp/yt-shorts-ci/test.mp4 \
             --title 'CI smoke test' \
             --description 'Local validation only' \
@@ -60,10 +66,10 @@ jobs:
           ffmpeg -hide_banner -loglevel error \
             -f lavfi -i color=c=black:s=800x800 \
             -frames:v 1 -y /tmp/yt-shorts-ci/profile.png
-          python3 .grease/source/bin/oils_for_unix.py ysh ci/youtube_brand.ysh \
+          .grease/source/bin/ysh ci/youtube_brand.ysh \
             --header /tmp/yt-shorts-ci/header.png \
             --profile /tmp/yt-shorts-ci/profile.png \
             --output-dir /tmp/yt-shorts-ci/branding
           test -s /tmp/yt-shorts-ci/branding/youtube-banner.jpg
           test -s /tmp/yt-shorts-ci/branding/youtube-profile.jpg
-          python3 .grease/source/bin/oils_for_unix.py ysh ci/youtube_check.ysh --help >/dev/null
+          .grease/source/bin/ysh ci/youtube_check.ysh --help >/dev/null
