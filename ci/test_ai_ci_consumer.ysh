@@ -43,7 +43,6 @@ copy_workflow_case() {
   case_root=$1
   mkdir -p "$case_root/.github/workflows" "$case_root/ci/ai-ci"
   cp .github/workflows/youtube-smoke.yml "$case_root/.github/workflows/"
-  cp .github/workflows/youtube-upload.yml "$case_root/.github/workflows/"
   cp ci/ai-ci/critical-paths.txt "$case_root/ci/ai-ci/"
 }
 

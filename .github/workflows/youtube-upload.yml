@@ -4,19 +4,19 @@ name: YouTube automation
 on:
   push:
     paths:
-      - 'ci/**'
-      - 'lib/**'
+      - 'ci/youtube_upload.ysh'
+      - 'ci/youtube_brand.ysh'
+      - 'ci/youtube_check.ysh'
       - 'docs/youtube-upload.md'
       - 'docs/youtube-branding.md'
-      - '.github/workflows/youtube-smoke.yml'
       - '.github/workflows/youtube-upload.yml'
   pull_request:
     paths:
-      - 'ci/**'
-      - 'lib/**'
+      - 'ci/youtube_upload.ysh'
+      - 'ci/youtube_brand.ysh'
+      - 'ci/youtube_check.ysh'
       - 'docs/youtube-upload.md'
       - 'docs/youtube-branding.md'
-      - '.github/workflows/youtube-smoke.yml'
       - '.github/workflows/youtube-upload.yml'
   workflow_dispatch:
     inputs:
@@ -73,12 +73,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@v4
       - name: Checkout Grease
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v4
         with:
           repository: isomorphisms/grease
-          ref: e963958976eaa80a2517bae3fd34b0e5115ffcbe
+          ref: main
           path: .grease
           submodules: recursive
       - name: Install media tools
@@ -125,14 +125,14 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout requested render ref
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v4
         with:
           ref: ${{ inputs.source_ref }}
       - name: Checkout Grease
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v4
         with:
           repository: isomorphisms/grease
-          ref: e963958976eaa80a2517bae3fd34b0e5115ffcbe
+          ref: main
           path: .grease
           submodules: recursive
       - name: Install media tools

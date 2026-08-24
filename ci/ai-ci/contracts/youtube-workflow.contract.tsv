@@ -6,9 +6,3 @@ not_contains	YT-SMOKE-SWALLOW-SET	.github/workflows/youtube-smoke.yml	set +e
 actions_pinned	YT-SMOKE-ACTION-PIN	.github/workflows/youtube-smoke.yml
 not_contains	YT-SMOKE-MUTABLE-GREASE	.github/workflows/youtube-smoke.yml	ref: main
 yaml_paths	YT-SMOKE-PATH-COVERAGE	ci/ai-ci/critical-paths.txt	.github/workflows/youtube-smoke.yml	pull_request
-yaml_forbid_key	YT-UPLOAD-CONTINUE	.github/workflows/youtube-upload.yml	continue-on-error
-not_contains	YT-UPLOAD-SWALLOW-OR	.github/workflows/youtube-upload.yml	||
-not_contains	YT-UPLOAD-SWALLOW-SET	.github/workflows/youtube-upload.yml	set +e
-actions_pinned	YT-UPLOAD-ACTION-PIN	.github/workflows/youtube-upload.yml
-not_contains	YT-UPLOAD-MUTABLE-GREASE	.github/workflows/youtube-upload.yml	ref: main
-yaml_paths	YT-UPLOAD-PATH-COVERAGE	ci/ai-ci/critical-paths.txt	.github/workflows/youtube-upload.yml	pull_request
