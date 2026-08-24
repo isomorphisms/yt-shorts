@@ -6,4 +6,4 @@ Each short lives in its own directory with its sources, narration, and render sc
 
 ## Publishing
 
-YouTube upload automation is documented in [`docs/youtube-upload.md`](docs/youtube-upload.md). The uploader runs under Grease and defaults to validation-only manual runs; publishing must be explicitly enabled.
+YouTube upload automation is documented in [`docs/youtube-upload.md`](docs/youtube-upload.md). The uploader runs under Grease. Push and pull-request CI only smoke-tests the uploader; an actual upload requires a manual workflow run with `publish=true`.
