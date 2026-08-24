@@ -17,15 +17,19 @@ Push and pull-request runs never upload a video; they only exercise the local Gr
    `https://developers.google.com/oauthplayground`
 
 6. In OAuth Playground settings, enable **Use your own OAuth credentials**, set **Access type** to **Offline**, and enter that client ID and client secret.
-7. Authorize only this scope:
+7. Authorize this scope:
 
-   `https://www.googleapis.com/auth/youtube.upload`
+   `https://www.googleapis.com/auth/youtube`
+
+   This single scope covers both video upload and the channel-branding updates in `ci/youtube_brand.ysh`. The narrower `youtube.upload` scope is enough for `videos.insert`, but not for `channels.update`.
 
 8. Exchange the authorization code for tokens and copy the refresh token.
 
 Do not use the Playground's default OAuth credentials for CI: the Playground automatically revokes refresh tokens created with its own credentials after 24 hours. Also note that an OAuth consent screen left in Testing mode can issue refresh tokens that expire after 7 days. A persistent CI credential therefore needs an appropriate production OAuth configuration.
 
-YouTube does not support ordinary service-account authentication for a normal channel upload. The refresh token represents the Google/YouTube user who granted the upload scope.
+YouTube does not support ordinary service-account authentication for a normal channel upload. The refresh token represents the Google/YouTube channel identity that granted the scope.
+
+If one Google login manages several YouTube channels, authorize each channel identity separately and keep one refresh token per channel. `ci/youtube_check.ysh --channel-id ...` provides a guard against using the wrong credential.
 
 ## GitHub Actions secrets
 
@@ -66,6 +70,7 @@ YouTube currently restricts uploads from unaudited API projects created after Ju
 ## Official references
 
 - YouTube Data API `videos.insert`: https://developers.google.com/youtube/v3/docs/videos/insert
+- YouTube Data API `channels.update`: https://developers.google.com/youtube/v3/docs/channels/update
 - YouTube OAuth: https://developers.google.com/youtube/v3/guides/authentication
 - OAuth Playground: https://developers.google.com/oauthplayground/
 - Shorts eligibility: https://support.google.com/youtube/answer/15424877
