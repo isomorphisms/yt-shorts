@@ -4,6 +4,8 @@ The repository uploads rendered Shorts through the YouTube Data API `videos.inse
 
 There is no separate Shorts upload endpoint. Upload a normal video; YouTube classifies square or vertical videos of at most 3 minutes as Shorts. The Grease uploader rejects landscape videos and videos longer than 180 seconds before making a network request.
 
+Push and pull-request runs never upload a video; they only exercise the local Grease validation path. Network publishing exists only in the manually dispatched `upload` job.
+
 ## One-time Google setup
 
 1. Create or select a Google Cloud project for this uploader.
@@ -39,7 +41,7 @@ Never commit any of these values.
 
 After `.github/workflows/youtube-upload.yml` is on the default branch, open **Actions → YouTube upload → Run workflow**. Run the workflow definition from the default branch and provide:
 
-- `source_ref`: branch, tag, or commit containing the rendered MP4; for example `teleman-wegert-k-loop`
+- `source_ref`: branch, tag, or commit containing the rendered MP4; defaults to `main`, for example use `teleman-wegert-k-loop` for that render branch
 - `video_path`: repository-relative path to the MP4 on that ref
 - `title`
 - `description`
