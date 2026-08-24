@@ -12,6 +12,10 @@ Ezra Miller, **“What Is…a Toric Variety?”**, *Notices of the American Math
 
 **source-read (short article / AMS issue text inspected).**
 
+## Memory identification
+
+**Confirmed by the user as the source remembered as “torus by Eli something.”** The author fragment in the memory was fuzzy; the remembered article was Ezra Miller’s **“What Is…a Toric Variety?”**
+
 ## Small mathematical units worth preserving
 
 ### 1. Polyhedron → toric variety
