@@ -7,7 +7,7 @@ These are repo-wide defaults for mathematical and numeric overlays unless a part
 - Render visible mathematics as mathematics rather than programming notation when practical.
 - Use a mathematical minus sign (`−`) rather than a hyphen-minus (`-`) in visible labels.
 - Put integral limits, subscripts, and superscripts in their normal mathematical positions. A renderer such as MathText/LaTeX is preferable to strings like `∫[-T,T]`, `_`, and `^` when the formula is prominent.
-- When an animation is explaining a limiting process, let the notation itself move with the parameter. For example, a symmetric Pearcey truncation can visibly step through `∫` with bounds `−1.1` and `1.1`, then `−1.2` and `1.2`, and so on.
+- When an animation is explaining a limiting process, the notation may move with the parameter when that adds information rather than duplicating motion already clear in the picture.
 
 ## Decimal readouts
 
@@ -17,4 +17,4 @@ These are repo-wide defaults for mathematical and numeric overlays unless a part
 
 ## Pearcey example
 
-For the Pearcey cutoff animation, retain the interval bar but pair it with a properly typeset numeric integral. The full definition should make the limiting role of `T` explicit, while the frame-by-frame readout shows the current symmetric bounds with one decimal place.
+For the Pearcey cutoff animation, do not use the interval bar. The camera motion and evolving field already provide the visual change. Keep the full definition properly typeset, and use a compact numeric cutoff readout only if the current value of `T` needs to be made explicit.
