@@ -3,16 +3,14 @@ name: YouTube smoke
 on:
   push:
     paths:
-      - 'ci/youtube_upload.ysh'
-      - 'ci/youtube_brand.ysh'
-      - 'ci/youtube_check.ysh'
+      - 'ci/**'
+      - 'lib/**'
       - '.github/workflows/youtube-smoke.yml'
       - '.github/workflows/youtube-upload.yml'
   pull_request:
     paths:
-      - 'ci/youtube_upload.ysh'
-      - 'ci/youtube_brand.ysh'
-      - 'ci/youtube_check.ysh'
+      - 'ci/**'
+      - 'lib/**'
       - '.github/workflows/youtube-smoke.yml'
       - '.github/workflows/youtube-upload.yml'
 
@@ -24,12 +22,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Enforce ai-ci consumer contracts
+        uses: isomorphisms/ai-ci@04e896e3e4156173c6f3cbfd42a3d055a46512c3
+        with:
+          suite: ci/ai-ci/suite.tsv
+          root: .
       - name: Checkout Grease
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: isomorphisms/grease
-          ref: main
+          ref: e963958976eaa80a2517bae3fd34b0e5115ffcbe
           path: .grease
           submodules: recursive
       - name: Bootstrap Python 2 for pinned Grease
@@ -46,6 +49,10 @@ jobs:
         run: |
           cd .grease/source
           build/py.sh minimal
+      - name: Prove escaped consumer defects stay rejected
+        env:
+          AICI_BIN: ${{ runner.temp }}/aici
+        run: .grease/source/bin/ysh ci/test_ai_ci_consumer.ysh
       - name: Install media tools
         run: |
           sudo apt-get update

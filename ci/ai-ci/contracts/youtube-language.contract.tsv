@@ -1,0 +1,3 @@
+no_suffix	YT-LANGUAGE-FORBIDDEN	ci	.py,.sh
+suffix_first_line	YT-GREASE-SHEBANG	ci	.ysh	#!/usr/bin/env ysh
+script_runner	YT-GREASE-INVOCATION	.github/workflows/youtube-smoke.yml	ci/test_ai_ci_consumer.ysh	.grease/source/bin/ysh

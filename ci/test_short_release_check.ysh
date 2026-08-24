@@ -21,6 +21,7 @@ tmp_dir=$(mktemp -d)
 trap 'rm -rf "$tmp_dir"' EXIT
 release="$tmp_dir/release"
 mkdir -p "$release/text"
+release_fixture='ci/ai-ci/release'
 
 ffmpeg -hide_banner -loglevel error \
   -f lavfi -i color=c=black:s=64x128:d=1 \
@@ -28,12 +29,11 @@ ffmpeg -hide_banner -loglevel error \
 
 printf 'A source-checked Short\n' > "$release/title.txt"
 printf 'The construction is source-checked.\n\nNigel Example — Example Work, CC BY 4.0, https://example.com/work\n' > "$release/description.txt"
-printf 'The same words are used for script, voiceover, and captions.\n' > "$release/script.txt"
-cp "$release/script.txt" "$release/voiceover.txt"
-cp "$release/script.txt" "$release/captions.txt"
+cp "$release_fixture/script.txt" "$release/script.txt"
+cp "$release_fixture/voiceover.txt" "$release/voiceover.txt"
+cp "$release_fixture/captions.txt" "$release/captions.txt"
 printf 'ON-SCREEN LABEL\n' > "$release/text/label.txt"
-printf 'asset\tcreator\tsource_url\tlicense\tlicense_url\tmodifications\thistory\tattribution\n' > "$release/sources.tsv"
-printf 'example.png\tNigel Example\thttps://example.com/work\tCC BY 4.0\thttps://creativecommons.org/licenses/by/4.0/\tnone\toriginal creator; no later uploader modifications\tNigel Example — Example Work, CC BY 4.0, https://example.com/work\n' >> "$release/sources.tsv"
+cp "$release_fixture/sources.tsv" "$release/sources.tsv"
 
 make_hashes() {
   (

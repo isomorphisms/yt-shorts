@@ -1,0 +1,4 @@
+ci/**
+lib/**
+.github/workflows/youtube-smoke.yml
+.github/workflows/youtube-upload.yml
