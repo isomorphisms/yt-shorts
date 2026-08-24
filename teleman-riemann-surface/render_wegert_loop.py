@@ -8,31 +8,20 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WEGERT_SHADER = ROOT / "third_party" / "wegert" / "app" / "src" / "main" / "assets" / "wegert.frag"
+WEGERT_COLOR_CORE = (
+    ROOT / "third_party" / "wegert" / "app" / "src" / "main" / "assets" / "wegert_color.glsl"
+)
 OUT = Path(__file__).resolve().parent / "wegert-k-loop.mp4"
 W = H = 720
 FPS = 30
 SECONDS = 7
 FRAMES = FPS * SECONDS
 
-# Load Wegert's production shader. For the headless renderer only, translate
-# the GLES prologue to desktop GLSL; the shader body remains Wegert's.
-source = WEGERT_SHADER.read_text()
-source = source.replace("#version 300 es", "#version 330 core")
-source = source.replace("precision highp float;\n", "")
-source = source.replace("precision highp int;\n", "")
-
-# sqrt((z^2-1)(z^2-k^2)) gives every factor exponent 1/2. Apply that
-# exponent to the phase and log-modulus which Wegert has already accumulated,
-# immediately before Wegert's existing colour computation.
-needle = "    float hue_degrees = 360.0 * positive_fract(phase / TAU);"
-if needle not in source:
-    raise SystemExit("Wegert shader changed: square-root injection point not found")
-source = source.replace(
-    needle,
-    "    phase *= 0.5;\n    log_modulus *= 0.5;\n\n" + needle,
-    1,
-)
+# Wegert owns the domain-coloring map. This renderer owns only the mathematical
+# function being evaluated. In particular, it does not represent Teleman's
+# branch points as Wegert's interactive zero/pole state and it does not patch
+# Wegert's palette implementation.
+color_core = WEGERT_COLOR_CORE.read_text()
 
 VERTEX = r"""#version 330 core
 layout(location = 0) in vec2 a_position;
@@ -42,6 +31,53 @@ void main() {
     gl_Position = vec4(a_position, 0.0, 1.0);
 }
 """
+
+FRAGMENT = (
+    r"""#version 330 core
+in vec2 v_ndc;
+out vec4 frag_color;
+uniform vec2 u_center;
+uniform float u_half_height;
+uniform float u_aspect;
+uniform float u_theta;
+
+"""
+    + color_core
+    + r"""
+
+vec2 complex_mul(vec2 left, vec2 right) {
+    return vec2(
+        left.x * right.x - left.y * right.y,
+        left.x * right.y + left.y * right.x
+    );
+}
+
+vec2 principal_sqrt(vec2 value) {
+    float magnitude = sqrt(length(value));
+    float half_phase = 0.5 * atan(value.y, value.x);
+    return magnitude * vec2(cos(half_phase), sin(half_phase));
+}
+
+vec2 teleman_value(vec2 z, float theta) {
+    // w(z;k) = sqrt((z^2 - 1)(z^2 - k^2)), with k moving once around |k|=1.
+    vec2 one = vec2(1.0, 0.0);
+    vec2 k = vec2(cos(theta), sin(theta));
+    vec2 z_squared = complex_mul(z, z);
+    vec2 k_squared = complex_mul(k, k);
+    vec2 product = complex_mul(z_squared - one, z_squared - k_squared);
+    return principal_sqrt(product);
+}
+
+void main() {
+    vec2 z = u_center + vec2(
+        v_ndc.x * u_half_height * u_aspect,
+        v_ndc.y * u_half_height
+    );
+    vec2 value = teleman_value(z, u_theta);
+    frag_color = vec4(wegert_color_complex(value), 1.0);
+}
+"""
+)
 
 EGL_DEFAULT_DISPLAY = C.c_void_p(0)
 EGL_NO_SURFACE = C.c_void_p(0)
@@ -116,8 +152,6 @@ glVertexAttribPointer = proto(gl, "glVertexAttribPointer", None, C.c_uint, C.c_i
 glGetUniformLocation = proto(gl, "glGetUniformLocation", C.c_int, C.c_uint, C.c_char_p)
 glUniform2f = proto(gl, "glUniform2f", None, C.c_int, C.c_float, C.c_float)
 glUniform1f = proto(gl, "glUniform1f", None, C.c_int, C.c_float)
-glUniform1i = proto(gl, "glUniform1i", None, C.c_int, C.c_int)
-glUniform2fv = proto(gl, "glUniform2fv", None, C.c_int, C.c_int, C.POINTER(C.c_float))
 glViewport = proto(gl, "glViewport", None, C.c_int, C.c_int, C.c_int, C.c_int)
 glDrawArrays = proto(gl, "glDrawArrays", None, C.c_uint, C.c_int, C.c_int)
 glReadPixels = proto(gl, "glReadPixels", None, C.c_int, C.c_int, C.c_int, C.c_int, C.c_uint, C.c_uint, C.c_void_p)
@@ -175,7 +209,7 @@ if not eglMakeCurrent(display, surface, surface, context):
     raise SystemExit("eglMakeCurrent failed")
 
 vertex_shader = compile_shader(GL_VERTEX_SHADER, VERTEX)
-fragment_shader = compile_shader(GL_FRAGMENT_SHADER, source)
+fragment_shader = compile_shader(GL_FRAGMENT_SHADER, FRAGMENT)
 program = glCreateProgram()
 glAttachShader(program, vertex_shader)
 glAttachShader(program, fragment_shader)
@@ -203,19 +237,18 @@ glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, None)
 
 
 def uniform(name):
-    return glGetUniformLocation(program, name.encode())
+    location = glGetUniformLocation(program, name.encode())
+    if location < 0:
+        raise RuntimeError(f"missing shader uniform: {name}")
+    return location
 
 
 locations = {name: uniform(name) for name in (
-    "u_center", "u_half_height", "u_aspect", "u_resolution",
-    "u_zero_count", "u_pole_count", "u_zeros", "u_poles",
+    "u_center", "u_half_height", "u_aspect", "u_theta",
 )}
 glUniform2f(locations["u_center"], 0.0, 0.0)
 glUniform1f(locations["u_half_height"], 1.35)
 glUniform1f(locations["u_aspect"], 1.0)
-glUniform2f(locations["u_resolution"], W, H)
-glUniform1i(locations["u_zero_count"], 4)
-glUniform1i(locations["u_pole_count"], 0)
 glViewport(0, 0, W, H)
 
 ffmpeg = subprocess.Popen([
@@ -227,15 +260,9 @@ ffmpeg = subprocess.Popen([
 ], stdin=subprocess.PIPE)
 
 pixels = (C.c_ubyte * (W * H * 4))()
-zeros = (C.c_float * 8)()
 for frame in range(FRAMES):
     theta = 2.0 * math.pi * frame / FRAMES
-    cosine = math.cos(theta)
-    sine = math.sin(theta)
-    values = (1.0, 0.0, -1.0, 0.0, cosine, sine, -cosine, -sine)
-    for index, value in enumerate(values):
-        zeros[index] = value
-    glUniform2fv(locations["u_zeros"], 4, zeros)
+    glUniform1f(locations["u_theta"], theta)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
     glFinish()
     glReadPixels(0, 0, W, H, GL_RGBA, GL_UNSIGNED_BYTE, pixels)
