@@ -1,6 +1,6 @@
 # Undergraduate Commutative Algebra
 
-**Miles Reid**, *Undergraduate Commutative Algebra*, LMS Student Texts 29/28-era CUP volume (1995).
+**Miles Reid**, *Undergraduate Commutative Algebra*, London Mathematical Society Student Texts 29, Cambridge University Press (1995).
 
 - Reid's bibliography entry: https://mreid.warwick.ac.uk/Personal/works
 - Cambridge book contents/index: https://www.cambridge.org/core/books/undergraduate-commutative-algebra/index/5EA6706954B2E43A3611E548DB97707E
