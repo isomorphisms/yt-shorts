@@ -17,9 +17,33 @@ Official source and downloads for all editions:
 
 - https://blogs.hrz.tu-freiberg.de/mathekalender/english/
 
+Author-uploaded searchable copies of many editions are also available from Elias Wegert and the other calendar authors on ResearchGate. These are useful for research, but the TU Freiberg/author copy remains the provenance source.
+
 Do **not** vendor the calendar PDFs or extracted calendar artwork in this repository until the reuse terms for that material have been established. For now, link to the official copies and make our own renders, diagrams, narration, and notes.
 
 Private correspondence is intentionally not committed here.
+
+## Research standard for every month
+
+The first 2023/2024 files were an initial topic pass. They are **not considered finished until the actual calendar entry has been read and its source trail followed**.
+
+For every month:
+
+1. **Read the calendar page itself.** Record the exact function/construction, what the phase portrait actually depicts, the mathematician attached to it, the calendar's historical story, guest author if one is credited, and every paper/book/link cited on the back page.
+2. **Expand the function.** Read the relevant Wikipedia article(s) as an index into names, equivalent formulations, neighboring functions, applications, and references. Wikipedia is a map, not the final authority.
+3. **Follow the citation graph.** Pull out original papers, standard expositions, and later researchers who materially developed the function or method. Prefer primary papers and good survey/expository sources over generic biography pages.
+4. **Expand the person only where it helps the mathematics.** Record collaborators, teachers/students, competing discoverers, later generalizers, and the concrete problem that produced the function. Generic honors and prestige biography are secondary.
+5. **Separate history from attribution.** If a method has disputed or layered attribution, keep that complexity. For example, Rayleigh–Ritz has Rayleigh and Ritz in the standard name, Courant discussed the independent origin, and historical work traces an earlier version to Liouville.
+6. **Design several possible lessons.** One calendar month can support a function lesson, a historical lesson, a comparison with a neighboring function, and a visual experiment. Do not force one month into one Short.
+
+A good research packet should therefore contain:
+
+- **Calendar:** year/month, exact title, credited contributor, phase-portrait formula/parameters, summary of the calendar explanation.
+- **Person:** concise biography tied to the topic.
+- **Function/history:** what problem produced it, who introduced it, who generalized or applied it later.
+- **Citation trail:** calendar bibliography first; then useful references discovered through Wikipedia and other scholarly sources.
+- **Related people/functions:** enough context to expose chains such as Gauss → Jacobi → Christoffel, Zolotarev → Cauer/Stiefel, Montel → Fatou/Julia → Zalcman, or Möbius/Klein → Poincaré.
+- **Video experiments:** concrete things to render, vary, compare, circle, zoom into, or animate.
 
 ## Wegert background
 
@@ -45,12 +69,12 @@ A month may yield several independent videos. The calendar's month/year is metad
 
 ## Files
 
-- [2024](2024.md) — all twelve entries from the final calendar, converted into lesson/video seeds.
-- [2023](2023.md) — all twelve entries, converted into lesson/video seeds.
-- 2011–2022 — next research pass. Keep the same format and prefer the original calendar bibliography over secondary summaries.
+- [2024](2024.md) — all twelve entries from the final calendar; initial lesson pass, now being source-audited against the calendar itself and expanded through its bibliography/citation graph.
+- [2023](2023.md) — all twelve entries; initial lesson pass, same deeper audit required.
+- 2011–2022 — research from the original calendar entries, not merely a list of month names.
 
 ## Editorial rule
 
 The function comes first. “Famous mathematician of the day” is usually the wrong framing. A useful entry should answer:
 
-> What can I make the viewer *see* about this function that is hard to see from the formula alone, and why did somebody care about it?
+> What can I make the viewer *see* about this function that is hard to see from the formula alone, why did somebody care about it, and who else changed what we know about it?
