@@ -69,9 +69,24 @@ A month may yield several independent videos. The calendar's month/year is metad
 
 ## Files
 
-- [2024](2024.md) — all twelve entries from the final calendar; initial lesson pass, now being source-audited against the calendar itself and expanded through its bibliography/citation graph.
-- [2023](2023.md) — all twelve entries; initial lesson pass, same deeper audit required.
-- 2011–2022 — research from the original calendar entries, not merely a list of month names.
+- [2024](2024.md) — all twelve entries from the final calendar; initial lesson pass plus a deeper [PDF-first source audit](2024-source-audit.md).
+- [2023](2023.md) — all twelve entries; initial lesson pass, deeper audit still required.
+- [2022](2022.md) — twelve month-by-month lesson seeds from the calendar text, including its paper trail where recoverable.
+- [2021](2021.md) — twelve month-by-month lesson seeds.
+- [2020](2020.md) — twelve month-by-month lesson seeds.
+- [2019](2019.md) — twelve month-by-month lesson seeds.
+- [2018](2018.md) — twelve month-by-month lesson seeds.
+- [2017](2017.md) — twelve month-by-month lesson seeds.
+- [2016](2016.md) — twelve month-by-month lesson seeds.
+- [2015](2015.md) — complete month/person order with exact known topics; several pictured formulas remain explicitly marked for direct-page audit.
+- [2014](2014.md) — complete month/person order with exact known topics; several pictured formulas remain explicitly marked for direct-page audit.
+- [2013](2013.md) — twelve month-by-month lesson seeds from the author-posted calendar text.
+- [2012](2012.md) — five rows recovered from direct/cross-calendar source evidence; seven months deliberately left as source-audit gaps rather than guessed.
+- [2011](2011.md) — twelve month-by-month lesson seeds from the first calendar.
+
+### Current audit status
+
+The catalog now covers the full 2011–2024 run at the year level. The remaining old-calendar source work is deliberately visible rather than hidden: seven 2012 pages still need direct recovery, and parts of 2014–2015 need their exact pictured formulas/parameters and original bibliography copied from the external calendar. Those rows should not be scripted as if the image-level audit were complete.
 
 ## Editorial rule
 
