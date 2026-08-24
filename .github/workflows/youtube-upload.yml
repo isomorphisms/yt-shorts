@@ -82,12 +82,12 @@ jobs:
           path: .grease
           submodules: recursive
       - name: Install media tools
-        shell: ${{ github.workspace }}/.grease/source/bin/ysh {0}
+        shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg jq curl imagemagick
       - name: Exercise uploader under Grease
-        shell: ${{ github.workspace }}/.grease/source/bin/ysh {0}
+        shell: bash
         run: |
           mkdir -p /tmp/yt-shorts-ci
           ffmpeg -hide_banner -loglevel error \
@@ -102,7 +102,7 @@ jobs:
             --made-for-kids false \
             --dry-run
       - name: Exercise branding and checker under Grease
-        shell: ${{ github.workspace }}/.grease/source/bin/ysh {0}
+        shell: bash
         run: |
           ffmpeg -hide_banner -loglevel error \
             -f lavfi -i color=c=black:s=1500x500 \
@@ -136,13 +136,13 @@ jobs:
           path: .grease
           submodules: recursive
       - name: Install media tools
-        shell: ${{ github.workspace }}/.grease/source/bin/ysh {0}
+        shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg jq curl
       - name: Validate or upload Short
         id: youtube
-        shell: ${{ github.workspace }}/.grease/source/bin/ysh {0}
+        shell: bash
         env:
           VIDEO_PATH: ${{ inputs.video_path }}
           VIDEO_TITLE: ${{ inputs.title }}
