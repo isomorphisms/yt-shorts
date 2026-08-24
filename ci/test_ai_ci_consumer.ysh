@@ -4,13 +4,13 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-aici_bin=${AICI_BIN:-}
-if test -z "$aici_bin" || ! test -x "$aici_bin"; then
-  echo 'AICI_BIN must name the compiled ai-ci verifier' >&2
+aici_source=${AICI_SOURCE:-.ai-ci/src/aici.c}
+if ! test -f "$aici_source"; then
+  echo "ai-ci verifier source not found: $aici_source" >&2
   exit 2
 fi
 
-for command_name in awk cp grep mkdir mktemp mv sed; do
+for command_name in awk cc cp grep mkdir mktemp mv sed; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
     echo "required consumer-test command not found: $command_name" >&2
     exit 2
@@ -19,6 +19,8 @@ done
 
 tmp_dir=$(mktemp -d)
 trap 'rm -rf "$tmp_dir"' EXIT
+aici_bin="$tmp_dir/aici"
+cc -std=c17 -Wall -Wextra -Werror -pedantic -O2 -o "$aici_bin" "$aici_source"
 
 expect_rejection() {
   label=$1
