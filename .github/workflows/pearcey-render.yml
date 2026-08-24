@@ -30,15 +30,15 @@ jobs:
           EGL_PLATFORM: surfaceless
           LIBGL_ALWAYS_SOFTWARE: "1"
         run: python "Eli's wiggert calendar/Trevor Pearcey/render_pearcey.py"
-      - name: Validate Pearcey math and base render
-        env:
-          EGL_PLATFORM: surfaceless
-          LIBGL_ALWAYS_SOFTWARE: "1"
-        run: python "Eli's wiggert calendar/Trevor Pearcey/validate_render.py"
       - name: Build revised presentation
         run: |
           python "Eli's wiggert calendar/Trevor Pearcey/revise_preview.py"
           python "Eli's wiggert calendar/Trevor Pearcey/revise_preview.py" --small
+      - name: Validate Pearcey math and revised sequence
+        env:
+          EGL_PLATFORM: surfaceless
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: python "Eli's wiggert calendar/Trevor Pearcey/validate_render.py"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
