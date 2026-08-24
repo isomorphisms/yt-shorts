@@ -37,9 +37,10 @@ Never commit any of these values.
 
 ## Running the workflow
 
-After `.github/workflows/youtube-upload.yml` is on the default branch, open **Actions → YouTube upload → Run workflow**. Select the branch that contains the rendered MP4, then provide:
+After `.github/workflows/youtube-upload.yml` is on the default branch, open **Actions → YouTube upload → Run workflow**. Run the workflow definition from the default branch and provide:
 
-- `video_path`: repository-relative path to the MP4
+- `source_ref`: branch, tag, or commit containing the rendered MP4; for example `teleman-wegert-k-loop`
+- `video_path`: repository-relative path to the MP4 on that ref
 - `title`
 - `description`
 - `privacy_status`: private, unlisted, or public
@@ -47,7 +48,7 @@ After `.github/workflows/youtube-upload.yml` is on the default branch, open **Ac
 - `made_for_kids`: explicit true/false declaration
 - `publish`: leave false for validation only; set true to actually upload
 
-The workflow always performs a Grease smoke test. A manual run then validates the selected video's dimensions and duration. With `publish=false`, it stops after printing the metadata. With `publish=true`, it exchanges the refresh token for a short-lived access token, starts a resumable `videos.insert` upload, uploads the MP4, and records the resulting YouTube video ID and URL in the Actions summary.
+The workflow always performs a Grease smoke test. The upload job then checks out `source_ref` and validates the selected video's dimensions and duration. With `publish=false`, it stops after printing the metadata. With `publish=true`, it exchanges the refresh token for a short-lived access token, starts a resumable `videos.insert` upload, uploads the MP4, and records the resulting YouTube video ID and URL in the Actions summary.
 
 ## Private-only API projects
 
