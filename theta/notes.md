@@ -1,5 +1,13 @@
 # Theta Short notes
 
+## Source pinned for the redo
+
+- Richard E. Borcherds, **“Modular forms: Theta functions”** (18:32): https://www.youtube.com/watch?v=9xQd9Ab8iNg
+- Timestamped transcript used for the source pass: https://youtube-transcript.ai/transcript/9xQd9Ab8iNg.txt
+- Course catalogue / lecture description: https://mathvideos.org/2021/richard-borcherds-modular-forms-viii/
+
+The old suggestions below remain provisional until they are replaced by notes tied to what Borcherds actually says in this lecture. Do not import examples from lecture 9 (“Theta functions in higher dimensions”) or generic theta-function material just because they are visually attractive.
+
 ## △ DUNCE CAP — STUPID-MODE NOTES
 
 > **WARNING:** The specific Short suggestions below were added while ChatGPT was in "stupid mode." Treat them as provisional placeholders, not as good editorial recommendations. They need to be revisited later with a careful pass through the actual source video, preferably from its transcript/timestamps, looking for genuinely missing drawings, concrete drawable objects/examples, and questions the lecturer actually raises.
