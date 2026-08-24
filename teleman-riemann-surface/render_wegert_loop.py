@@ -39,6 +39,7 @@ out vec4 frag_color;
 uniform vec2 u_center;
 uniform float u_half_height;
 uniform float u_aspect;
+uniform vec2 u_resolution;
 uniform float u_theta;
 
 """
@@ -74,7 +75,27 @@ void main() {
         v_ndc.y * u_half_height
     );
     vec2 value = teleman_value(z, u_theta);
-    frag_color = vec4(wegert_color_complex(value), 1.0);
+    vec3 color = wegert_color_complex(value);
+
+    // Parameter guide only: one visible k moves around |k|=1.  This is not
+    // Wegert's zero/pole UI and does not alter the function evaluation above.
+    float world_per_pixel = (2.0 * u_half_height) / max(u_resolution.y, 1.0);
+    float unit_circle_pixels = abs(length(z) - 1.0) / world_per_pixel;
+    float guide_mix = 0.42 * (1.0 - smoothstep(0.8, 1.8, unit_circle_pixels));
+    vec3 marker_dark = vec3(0.08);
+    vec3 marker_light = vec3(0.97, 0.96, 0.93);
+    color = mix(color, marker_dark, guide_mix);
+
+    vec2 k = vec2(cos(u_theta), sin(u_theta));
+    float k_radius_pixels = length(z - k) / world_per_pixel;
+    if (k_radius_pixels < 7.0) {
+        color = k_radius_pixels < 4.8 ? marker_light : marker_dark;
+    }
+    if (k_radius_pixels < 1.8) {
+        color = marker_dark;
+    }
+
+    frag_color = vec4(color, 1.0);
 }
 """
 )
@@ -244,11 +265,12 @@ def uniform(name):
 
 
 locations = {name: uniform(name) for name in (
-    "u_center", "u_half_height", "u_aspect", "u_theta",
+    "u_center", "u_half_height", "u_aspect", "u_resolution", "u_theta",
 )}
 glUniform2f(locations["u_center"], 0.0, 0.0)
 glUniform1f(locations["u_half_height"], 1.35)
 glUniform1f(locations["u_aspect"], 1.0)
+glUniform2f(locations["u_resolution"], W, H)
 glViewport(0, 0, W, H)
 
 ffmpeg = subprocess.Popen([
