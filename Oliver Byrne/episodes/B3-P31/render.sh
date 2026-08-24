@@ -12,6 +12,7 @@ exec docker run --rm \
   manim render \
     --renderer=cairo \
     --disable_caching \
+    --seed=0 \
     --resolution=1080,1920 \
     --fps=30 \
     --format=mp4 \
