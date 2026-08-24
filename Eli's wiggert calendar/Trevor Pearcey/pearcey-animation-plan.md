@@ -219,6 +219,12 @@ Suggested output:
 
 ## Narration/text possibilities
 
+### Preferred plain-English conceptual copy
+
+> Geometrical optics says rays pile up at a caustic and predicts an infinite intensity there. Wave optics fixes that: the arriving waves interfere instead, giving a finite structured diffraction pattern. The Pearcey function is the canonical wave pattern that smooths a cusp singularity.
+
+This is the current best top-down explanation: start with what physical problem the Pearcey function solves, then let the conventional formula underneath show exactly how the computation is done.
+
 This can work entirely with text.
 
 Possible sequence:
