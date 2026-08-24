@@ -18,6 +18,16 @@ This is **not** a “What Is…?” column article.
 
 **source-read (AMS issue text inspected).**
 
+## Memory match
+
+This is the **best-supported identification** of the initial “torus by Eli something” memory.
+
+- J. Elisenda Grigsby is publicly known as **Eli Grigsby**.
+- Figure 2 is explicitly a braided surface bounded by a **(3,4)-torus knot**.
+- The surrounding named *Notices* sources are Floer/low-dimensional-topology pieces. Joshua Greene’s later AMS Conant Prize response for **“Heegaard Floer homology”** explicitly thanks **Eli Grigsby**, making the remembered adjacency especially plausible.
+
+Ezra Miller’s **“What Is…a Toric Variety?”** remains a separate, genuine “What Is…?” source involving tori, but it does not match the remembered author-name cue.
+
 ## Small mathematical units visible in the source
 
 ### 1. A knot versus a surface it bounds
@@ -38,7 +48,7 @@ The source moves from the classical geometric questions to homological invariant
 
 ### 5. Torus-knot material
 
-The AMS issue includes a figure involving a **(3,4)-torus knot** and a braided surface bounded by it. This is why the article is retained as one plausible match for the request remembered as “torus by Eli something.”
+The AMS issue includes a figure involving a **(3,4)-torus knot** and a braided surface bounded by it. This is the concrete torus cue behind the memory match.
 
 ## Possible visual studies — not scripts
 
