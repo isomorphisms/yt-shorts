@@ -23,6 +23,8 @@ jobs:
   smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      PYTHONPATH: ${{ github.workspace }}/.grease/source:${{ github.workspace }}/.grease/source/vendor
     steps:
       - uses: actions/checkout@v4
       - name: Checkout Grease
@@ -42,7 +44,7 @@ jobs:
           ffmpeg -hide_banner -loglevel error \
             -f lavfi -i color=c=black:s=1080x1920:d=1 \
             -pix_fmt yuv420p -y /tmp/yt-shorts-ci/test.mp4
-          .grease/source/bin/ysh ci/youtube_upload.ysh \
+          python3 .grease/source/bin/oils_for_unix.py ysh ci/youtube_upload.ysh \
             --video /tmp/yt-shorts-ci/test.mp4 \
             --title 'CI smoke test' \
             --description 'Local validation only' \
@@ -58,10 +60,10 @@ jobs:
           ffmpeg -hide_banner -loglevel error \
             -f lavfi -i color=c=black:s=800x800 \
             -frames:v 1 -y /tmp/yt-shorts-ci/profile.png
-          .grease/source/bin/ysh ci/youtube_brand.ysh \
+          python3 .grease/source/bin/oils_for_unix.py ysh ci/youtube_brand.ysh \
             --header /tmp/yt-shorts-ci/header.png \
             --profile /tmp/yt-shorts-ci/profile.png \
             --output-dir /tmp/yt-shorts-ci/branding
           test -s /tmp/yt-shorts-ci/branding/youtube-banner.jpg
           test -s /tmp/yt-shorts-ci/branding/youtube-profile.jpg
-          .grease/source/bin/ysh ci/youtube_check.ysh --help >/dev/null
+          python3 .grease/source/bin/oils_for_unix.py ysh ci/youtube_check.ysh --help >/dev/null
