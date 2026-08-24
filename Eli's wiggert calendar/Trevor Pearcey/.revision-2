@@ -1,0 +1,5 @@
+zoom_out_finish_seconds=5.5
+natural_hold_seconds=6
+overlay_seconds=4
+show_interval_bar=false
+cusp_overlay=dashed_labeled
