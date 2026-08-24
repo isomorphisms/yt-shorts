@@ -60,7 +60,9 @@ done
 : "${YOUTUBE_REFRESH_TOKEN:?YOUTUBE_REFRESH_TOKEN is required}"
 
 tmp_dir=$(mktemp -d)
-trap 'rm -rf "$tmp_dir"' EXIT
+trap --add EXIT {
+  rm -rf "$tmp_dir"
+}
 
 token_body="$tmp_dir/token.json"
 channel_body="$tmp_dir/channel.json"

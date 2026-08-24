@@ -15,6 +15,7 @@ failure to match the declared diagnostic:
 | release changes omitted from workflow paths | `YT-SMOKE-PATH-COVERAGE` |
 | Grease invocation hidden in a multiline block | `YT-GREASE-INVOCATION` |
 | `.ysh` file with a shell shebang | `YT-GREASE-SHEBANG` |
+| POSIX string trap rejected by real YSH | `YT-POSIX-TRAP-BRAND` |
 | voiceover drift from the canonical script | `YT-NARRATIVE-SCRIPT-VOICEOVER` |
 | blank provenance-history field | `YT-PROVENANCE-FIELDS` |
 | incomplete evaluation-manifest row | `YT-EVAL-CASES-FIELDS` |

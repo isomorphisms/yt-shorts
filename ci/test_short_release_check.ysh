@@ -18,7 +18,9 @@ for command_name in ffmpeg mktemp sha256sum cp; do
 done
 
 tmp_dir=$(mktemp -d)
-trap 'rm -rf "$tmp_dir"' EXIT
+trap --add EXIT {
+  rm -rf "$tmp_dir"
+}
 release="$tmp_dir/release"
 mkdir -p "$release/text"
 release_fixture='ci/ai-ci/release'

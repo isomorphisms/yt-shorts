@@ -168,7 +168,9 @@ token_body=$(mktemp)
 init_headers=$(mktemp)
 init_body=$(mktemp)
 upload_body=$(mktemp)
-trap 'rm -f "$token_body" "$init_headers" "$init_body" "$upload_body"' EXIT
+trap --add EXIT {
+  rm -f "$token_body" "$init_headers" "$init_body" "$upload_body"
+}
 
 token_code=$(curl -sS \
   -o "$token_body" \

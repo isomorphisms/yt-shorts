@@ -89,6 +89,21 @@ awk '
 expect_rejection hidden-grease-invocation ci/ai-ci/contracts/youtube-language.contract.tsv \
   "$case_root" YT-GREASE-INVOCATION
 
+case_root="$tmp_dir/posix-trap"
+mkdir -p "$case_root/.github/workflows"
+cp -R ci "$case_root/"
+cp .github/workflows/youtube-smoke.yml "$case_root/.github/workflows/"
+awk '
+  index($0, "trap --add EXIT {") {
+    print "trap \047rm -rf \042$tmp_dir\042\047 EXIT"
+    next
+  }
+  { print }
+' "$case_root/ci/youtube_brand.ysh" > "$case_root/youtube-brand.tmp"
+mv "$case_root/youtube-brand.tmp" "$case_root/ci/youtube_brand.ysh"
+expect_rejection posix-string-trap ci/ai-ci/contracts/youtube-language.contract.tsv \
+  "$case_root" YT-POSIX-TRAP-BRAND
+
 case_root="$tmp_dir/narrative-drift"
 cp -R ci/ai-ci/release "$case_root"
 printf 'different voiceover text\n' > "$case_root/voiceover.txt"

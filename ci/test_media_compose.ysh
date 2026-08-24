@@ -23,7 +23,9 @@ else
 fi
 
 tmp_dir=$(mktemp -d)
-trap 'rm -rf "$tmp_dir"' EXIT
+trap --add EXIT {
+  rm -rf "$tmp_dir"
+}
 
 base="$tmp_dir/base.png"
 source_image="$tmp_dir/source.png"

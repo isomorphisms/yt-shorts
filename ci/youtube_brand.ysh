@@ -95,7 +95,9 @@ fi
 
 mkdir -p "$output_dir"
 tmp_dir=$(mktemp -d)
-trap 'rm -rf "$tmp_dir"' EXIT
+trap --add EXIT {
+  rm -rf "$tmp_dir"
+}
 
 banner_output="$output_dir/youtube-banner.jpg"
 profile_output="$output_dir/youtube-profile.jpg"
