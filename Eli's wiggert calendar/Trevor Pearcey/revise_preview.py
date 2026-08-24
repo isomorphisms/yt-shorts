@@ -221,7 +221,9 @@ def make_overlays(directory: Path, width: int, height: int, fps: int):
     box_width = max(title_width, equation_width) + 44 * scale
     box_height = 92 * scale
     box_x = (width - box_width) / 2
-    box_y = 940 * scale
+    # Keep the explanation label below the moving truncation notation so the
+    # late overlay cannot cover the interval bar or its integral limits.
+    box_y = 1140 * scale
     draw.rounded_rectangle(
         (box_x, box_y, box_x + box_width, box_y + box_height),
         radius=round(14 * scale),
