@@ -64,6 +64,7 @@ permissions:
 jobs:
   smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Checkout Grease
@@ -98,6 +99,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     needs: smoke
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout requested render ref
         uses: actions/checkout@v4
