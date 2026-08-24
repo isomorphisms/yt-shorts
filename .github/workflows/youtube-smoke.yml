@@ -1,0 +1,67 @@
+name: YouTube smoke
+
+on:
+  push:
+    paths:
+      - 'ci/youtube_upload.ysh'
+      - 'ci/youtube_brand.ysh'
+      - 'ci/youtube_check.ysh'
+      - '.github/workflows/youtube-smoke.yml'
+      - '.github/workflows/youtube-upload.yml'
+  pull_request:
+    paths:
+      - 'ci/youtube_upload.ysh'
+      - 'ci/youtube_brand.ysh'
+      - 'ci/youtube_check.ysh'
+      - '.github/workflows/youtube-smoke.yml'
+      - '.github/workflows/youtube-upload.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout Grease
+        uses: actions/checkout@v4
+        with:
+          repository: isomorphisms/grease
+          ref: main
+          path: .grease
+          submodules: recursive
+      - name: Install media tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg jq curl imagemagick
+      - name: Exercise uploader under Grease
+        run: |
+          mkdir -p /tmp/yt-shorts-ci
+          ffmpeg -hide_banner -loglevel error \
+            -f lavfi -i color=c=black:s=1080x1920:d=1 \
+            -pix_fmt yuv420p -y /tmp/yt-shorts-ci/test.mp4
+          .grease/source/bin/ysh ci/youtube_upload.ysh \
+            --video /tmp/yt-shorts-ci/test.mp4 \
+            --title 'CI smoke test' \
+            --description 'Local validation only' \
+            --privacy private \
+            --category-id 27 \
+            --made-for-kids false \
+            --dry-run
+      - name: Exercise branding and checker under Grease
+        run: |
+          ffmpeg -hide_banner -loglevel error \
+            -f lavfi -i color=c=black:s=1500x500 \
+            -frames:v 1 -y /tmp/yt-shorts-ci/header.png
+          ffmpeg -hide_banner -loglevel error \
+            -f lavfi -i color=c=black:s=800x800 \
+            -frames:v 1 -y /tmp/yt-shorts-ci/profile.png
+          .grease/source/bin/ysh ci/youtube_brand.ysh \
+            --header /tmp/yt-shorts-ci/header.png \
+            --profile /tmp/yt-shorts-ci/profile.png \
+            --output-dir /tmp/yt-shorts-ci/branding
+          test -s /tmp/yt-shorts-ci/branding/youtube-banner.jpg
+          test -s /tmp/yt-shorts-ci/branding/youtube-profile.jpg
+          .grease/source/bin/ysh ci/youtube_check.ysh --help >/dev/null
