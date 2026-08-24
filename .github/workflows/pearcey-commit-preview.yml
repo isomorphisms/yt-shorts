@@ -39,6 +39,7 @@ jobs:
       - name: Render repository preview
         run: python "Eli's wiggert calendar/Trevor Pearcey/revise_preview.py" --small
       - name: Commit repository preview
+        # Keep a phone-sized reviewable draft on the branch without vendoring the full render.
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
