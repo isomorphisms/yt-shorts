@@ -73,19 +73,33 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Checkout Grease
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: isomorphisms/grease
-          ref: main
+          ref: e963958976eaa80a2517bae3fd34b0e5115ffcbe
           path: .grease
           submodules: recursive
-      - name: Install media tools
+      - name: Bootstrap Python 2 for pinned Grease
+        run: |
+          curl -fsSLo "$RUNNER_TEMP/Python-2.7.18.tar.xz" \
+            https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz
+          tar -xJf "$RUNNER_TEMP/Python-2.7.18.tar.xz" -C "$RUNNER_TEMP"
+          cd "$RUNNER_TEMP/Python-2.7.18"
+          ./configure --prefix="$RUNNER_TEMP/python2" --without-ensurepip
+          make -j2
+          make install
+          echo "$RUNNER_TEMP/python2/bin" >> "$GITHUB_PATH"
+      - name: Install Grease build and media tools
         shell: bash
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg jq curl imagemagick
+          sudo apt-get install -y libreadline-dev ffmpeg jq curl imagemagick
+      - name: Build Grease dev runtime
+        run: |
+          cd .grease/source
+          build/py.sh minimal
       - name: Exercise uploader under Grease
         shell: bash
         run: |
@@ -125,21 +139,35 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout requested render ref
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ inputs.source_ref }}
       - name: Checkout Grease
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: isomorphisms/grease
-          ref: main
+          ref: e963958976eaa80a2517bae3fd34b0e5115ffcbe
           path: .grease
           submodules: recursive
-      - name: Install media tools
+      - name: Bootstrap Python 2 for pinned Grease
+        run: |
+          curl -fsSLo "$RUNNER_TEMP/Python-2.7.18.tar.xz" \
+            https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz
+          tar -xJf "$RUNNER_TEMP/Python-2.7.18.tar.xz" -C "$RUNNER_TEMP"
+          cd "$RUNNER_TEMP/Python-2.7.18"
+          ./configure --prefix="$RUNNER_TEMP/python2" --without-ensurepip
+          make -j2
+          make install
+          echo "$RUNNER_TEMP/python2/bin" >> "$GITHUB_PATH"
+      - name: Install Grease build and media tools
         shell: bash
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg jq curl
+          sudo apt-get install -y libreadline-dev ffmpeg jq curl
+      - name: Build Grease dev runtime
+        run: |
+          cd .grease/source
+          build/py.sh minimal
       - name: Validate or upload Short
         id: youtube
         shell: bash
