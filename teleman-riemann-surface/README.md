@@ -20,6 +20,12 @@ The pinned Wegert commit is currently from `isomorphisms/wegert` PR #21, which e
 
 There is deliberately no narration or synthetic voice in this test. This is only the moving plot.
 
+## Wegert sources and attribution
+
+The source archive for Wegert's *Complex Beauties* calendars, the official 2011–2024 download links, rights-status note, and the primary phase-portrait citations are kept in [`../sources/wegert-complex-beauties.md`](../sources/wegert-complex-beauties.md).
+
+The calendars are freely downloadable from the authors' official archive, but no explicit redistribution license was located and the calendars carry copyright notices. Do not copy calendar PDFs or images into this repository merely because the official downloads are public; link and cite the originals unless separate permission is established.
+
 ## Render
 
 ```sh
