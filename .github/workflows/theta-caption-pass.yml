@@ -1,0 +1,27 @@
+name: theta-caption-pass
+
+on:
+  push:
+    branches: [theta-notes]
+
+jobs:
+  captions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch timestamped captions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet --disable-pip-version-check yt-dlp
+          yt-dlp \
+            --skip-download \
+            --write-auto-subs \
+            --write-subs \
+            --sub-langs 'en,en-orig' \
+            --sub-format vtt \
+            -o 'theta.%(ext)s' \
+            'https://www.youtube.com/watch?v=9xQd9Ab8iNg'
+          echo '===== CAPTION FILES ====='
+          ls -l theta*.vtt
+          echo '===== CAPTIONS ====='
+          cat theta*.vtt
