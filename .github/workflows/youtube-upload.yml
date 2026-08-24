@@ -1,0 +1,142 @@
+name: YouTube upload
+
+on:
+  push:
+    paths:
+      - 'ci/youtube_upload.ysh'
+      - 'docs/youtube-upload.md'
+      - '.github/workflows/youtube-upload.yml'
+  pull_request:
+    paths:
+      - 'ci/youtube_upload.ysh'
+      - 'docs/youtube-upload.md'
+      - '.github/workflows/youtube-upload.yml'
+  workflow_dispatch:
+    inputs:
+      video_path:
+        description: Repository-relative path to rendered MP4
+        required: true
+        type: string
+      title:
+        description: YouTube video title
+        required: true
+        type: string
+      description:
+        description: YouTube video description
+        required: false
+        type: string
+      privacy_status:
+        description: YouTube privacy setting
+        required: true
+        default: private
+        type: choice
+        options:
+          - private
+          - unlisted
+          - public
+      category_id:
+        description: YouTube video category ID
+        required: true
+        default: '27'
+        type: string
+      made_for_kids:
+        description: Declare whether the video is made for kids
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      publish:
+        description: Actually upload; false validates only
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout Grease
+        uses: actions/checkout@v4
+        with:
+          repository: isomorphisms/grease
+          ref: main
+          path: .grease
+          submodules: recursive
+      - name: Install media tools
+        shell: ./.grease/source/bin/ysh {0}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg jq curl
+      - name: Exercise uploader under Grease
+        shell: ./.grease/source/bin/ysh {0}
+        run: |
+          mkdir -p /tmp/yt-shorts-ci
+          ffmpeg -hide_banner -loglevel error \
+            -f lavfi -i color=c=black:s=1080x1920:d=1 \
+            -pix_fmt yuv420p -y /tmp/yt-shorts-ci/test.mp4
+          ./.grease/source/bin/ysh ci/youtube_upload.ysh \
+            --video /tmp/yt-shorts-ci/test.mp4 \
+            --title 'CI smoke test' \
+            --description 'Local validation only' \
+            --privacy private \
+            --category-id 27 \
+            --made-for-kids false \
+            --dry-run
+
+  upload:
+    if: github.event_name == 'workflow_dispatch'
+    needs: smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout Grease
+        uses: actions/checkout@v4
+        with:
+          repository: isomorphisms/grease
+          ref: main
+          path: .grease
+          submodules: recursive
+      - name: Install media tools
+        shell: ./.grease/source/bin/ysh {0}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg jq curl
+      - name: Validate or upload Short
+        id: youtube
+        shell: ./.grease/source/bin/ysh {0}
+        env:
+          VIDEO_PATH: ${{ inputs.video_path }}
+          VIDEO_TITLE: ${{ inputs.title }}
+          VIDEO_DESCRIPTION: ${{ inputs.description }}
+          PRIVACY_STATUS: ${{ inputs.privacy_status }}
+          CATEGORY_ID: ${{ inputs.category_id }}
+          MADE_FOR_KIDS: ${{ inputs.made_for_kids }}
+          PUBLISH: ${{ inputs.publish }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          if test "$PUBLISH" = 'true'; then
+            ./.grease/source/bin/ysh ci/youtube_upload.ysh \
+              --video "$VIDEO_PATH" \
+              --title "$VIDEO_TITLE" \
+              --description "$VIDEO_DESCRIPTION" \
+              --privacy "$PRIVACY_STATUS" \
+              --category-id "$CATEGORY_ID" \
+              --made-for-kids "$MADE_FOR_KIDS"
+          else
+            ./.grease/source/bin/ysh ci/youtube_upload.ysh \
+              --video "$VIDEO_PATH" \
+              --title "$VIDEO_TITLE" \
+              --description "$VIDEO_DESCRIPTION" \
+              --privacy "$PRIVACY_STATUS" \
+              --category-id "$CATEGORY_ID" \
+              --made-for-kids "$MADE_FOR_KIDS" \
+              --dry-run
+          fi
