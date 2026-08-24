@@ -37,11 +37,69 @@ class ByrneIII31(Scene):
             toward_right ← toward_right / np.linalg.norm(toward_right)
             return a, toward_left, toward_right
 
+        def perpendicular_bisector_endpoints(chord_end):
+            midpoint ← 0.5 * (moving_point() + chord_end)
+            outward ← midpoint - center
+            outward ← outward / np.linalg.norm(outward)
+            return center, midpoint + 0.62 * outward
+
         title ← Text("Byrne III.31", font_size=52, color=ink).move_to([0, 6.75, 0])
         statement ← Text("angle in a semicircle", font_size=34, color=ink).move_to([0, 5.85, 0])
 
         circle ← Circle(radius=radius, color=ink, stroke_width=5).move_to(center)
         diameter ← Line(left, right, color=ink, stroke_width=8)
+
+        left_bisector_start, left_bisector_end ← perpendicular_bisector_endpoints(left)
+        left_bisector ← DashedLine(
+            left_bisector_start,
+            left_bisector_end,
+            color=red,
+            stroke_width=4,
+            dash_length=0.10,
+            dashed_ratio=0.45,
+        )
+
+        def update_left_bisector(m):
+            start, end ← perpendicular_bisector_endpoints(left)
+            m.become(
+                DashedLine(
+                    start,
+                    end,
+                    color=red,
+                    stroke_width=4,
+                    dash_length=0.10,
+                    dashed_ratio=0.45,
+                )
+            )
+            return m
+
+        left_bisector.add_updater(update_left_bisector)
+
+        right_bisector_start, right_bisector_end ← perpendicular_bisector_endpoints(right)
+        right_bisector ← DashedLine(
+            right_bisector_start,
+            right_bisector_end,
+            color=red,
+            stroke_width=4,
+            dash_length=0.10,
+            dashed_ratio=0.45,
+        )
+
+        def update_right_bisector(m):
+            start, end ← perpendicular_bisector_endpoints(right)
+            m.become(
+                DashedLine(
+                    start,
+                    end,
+                    color=red,
+                    stroke_width=4,
+                    dash_length=0.10,
+                    dashed_ratio=0.45,
+                )
+            )
+            return m
+
+        right_bisector.add_updater(update_right_bisector)
 
         left_dot ← Dot(left, radius=0.085, color=ink)
         right_dot ← Dot(right, radius=0.085, color=ink)
@@ -99,6 +157,8 @@ class ByrneIII31(Scene):
             title,
             statement,
             circle,
+            left_bisector,
+            right_bisector,
             diameter,
             left_leg,
             right_leg,
