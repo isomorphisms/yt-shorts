@@ -12,6 +12,17 @@ The goal is to make a future request such as **“Byrne III.31 — show the angl
 
 Licensing details: [`sources-and-licensing.md`](sources-and-licensing.md).
 
+## Project languages
+
+Manim does not imply Python source in this repository.
+
+- Write Manim scene source in **Ithon**, normally `scene.pi`.
+- Write render/build glue in **Grease/YSH**, following the existing `#!/usr/bin/env ysh` convention.
+- Do not introduce `scene.py`, Bash render scripts, or Bash-driven CI merely because upstream Manim examples use them.
+- If automated rendering is added, it should execute the same Ithon/Grease entry point used locally rather than maintain a second implementation in another language.
+
+The first Byrne III.31 contract test exposed this as a real requirement: a mathematically correct render is not sufficient if the production source bypasses the user's language stack.
+
 ## Geometry first
 
 Do not trace a screenshot when the construction can be represented exactly.
@@ -126,7 +137,8 @@ Suggested name:
 Suggested files as needed:
 
 - `README.md` — the actual point to make, proposition, source links, and any credit/license notes;
-- `scene.py` — Manim scene;
+- `scene.pi` — Ithon Manim scene;
+- `render` — Grease/YSH entry point when a repeatable render command is useful;
 - local assets only when they are genuinely needed and reusable under their license;
 - rendered preview using the repository's normal render/preview conventions.
 
