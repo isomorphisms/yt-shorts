@@ -77,12 +77,21 @@ if test -n "$profile_source" && ! test -f "$profile_source"; then
   exit 2
 fi
 
-for command_name in magick mkdir mktemp rm wc tr; do
+for command_name in mkdir mktemp rm wc tr; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
     echo "required command not found: $command_name" >&2
     exit 2
   fi
 done
+
+if command -v magick >/dev/null 2>&1; then
+  image_command='magick'
+elif command -v convert >/dev/null 2>&1; then
+  image_command='convert'
+else
+  echo 'required ImageMagick command not found: magick or convert' >&2
+  exit 2
+fi
 
 mkdir -p "$output_dir"
 tmp_dir=$(mktemp -d)
@@ -96,7 +105,7 @@ foreground="$tmp_dir/banner-foreground.png"
 # YouTube recommends 2560x1440. Keep the entire source header inside the
 # cross-device safe center (1235x338) and fill the remaining canvas with a
 # blurred copy of the same art rather than inventing new colors or graphics.
-magick "$header_source" \
+$image_command "$header_source" \
   -auto-orient \
   -resize '2560x1440^' \
   -gravity center \
@@ -104,12 +113,12 @@ magick "$header_source" \
   -blur 0x36 \
   "$background"
 
-magick "$header_source" \
+$image_command "$header_source" \
   -auto-orient \
   -resize '1235x338>' \
   "$foreground"
 
-magick "$background" "$foreground" \
+$image_command "$background" "$foreground" \
   -gravity center \
   -compose over \
   -composite \
@@ -117,7 +126,7 @@ magick "$background" "$foreground" \
   -quality 90 \
   "$banner_output"
 
-banner_dimensions=$(magick "$banner_output" -format '%wx%h' info:)
+banner_dimensions=$($image_command "$banner_output" -format '%wx%h' info:)
 banner_bytes=$(wc -c < "$banner_output" | tr -d '[:space:]')
 
 if test "$banner_dimensions" != '2560x1440'; then
@@ -132,7 +141,7 @@ fi
 echo "Prepared YouTube banner: $banner_output ($banner_dimensions, ${banner_bytes} bytes)"
 
 if test -n "$profile_source"; then
-  magick "$profile_source" \
+  $image_command "$profile_source" \
     -auto-orient \
     -resize '800x800^' \
     -gravity center \
