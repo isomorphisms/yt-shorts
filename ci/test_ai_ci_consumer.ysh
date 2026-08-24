@@ -78,15 +78,14 @@ expect_rejection bad-ysh-shebang ci/ai-ci/contracts/youtube-language.contract.ts
 case_root="$tmp_dir/hidden-grease"
 mkdir -p "$case_root/.github/workflows"
 cp -R ci "$case_root/"
-while IFS= read -r line; do
-  case "$line" in
-    *'run: .grease/source/bin/ysh ci/test_ai_ci_consumer.ysh')
-      printf '%s\n' '        run: |'
-      printf '%s\n' '          .grease/source/bin/ysh ci/test_ai_ci_consumer.ysh'
-      ;;
-    *) printf '%s\n' "$line" ;;
-  esac
-done < .github/workflows/youtube-smoke.yml > "$case_root/.github/workflows/youtube-smoke.yml"
+awk '
+  index($0, "run: .grease/source/bin/ysh ci/test_ai_ci_consumer.ysh") {
+    print "        run: |"
+    print "          .grease/source/bin/ysh ci/test_ai_ci_consumer.ysh"
+    next
+  }
+  { print }
+' .github/workflows/youtube-smoke.yml > "$case_root/.github/workflows/youtube-smoke.yml"
 expect_rejection hidden-grease-invocation ci/ai-ci/contracts/youtube-language.contract.tsv \
   "$case_root" YT-GREASE-INVOCATION
 
