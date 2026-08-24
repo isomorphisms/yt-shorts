@@ -60,7 +60,7 @@ expect_rejection mutable-action ci/ai-ci/contracts/youtube-workflow.contract.tsv
 
 case_root="$tmp_dir/omitted-path"
 copy_workflow_case "$case_root"
-sed "/- 'ci\/\*\*'/d" "$case_root/.github/workflows/youtube-smoke.yml" \
+grep -F -v "      - 'ci/**'" "$case_root/.github/workflows/youtube-smoke.yml" \
   > "$case_root/workflow.tmp"
 mv "$case_root/workflow.tmp" "$case_root/.github/workflows/youtube-smoke.yml"
 expect_rejection omitted-release-path ci/ai-ci/contracts/youtube-workflow.contract.tsv \
