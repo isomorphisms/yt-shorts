@@ -23,23 +23,29 @@ jobs:
       - name: Install render dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg libegl1 libgl1-mesa-dri fonts-dejavu-core
+          sudo apt-get install -y ffmpeg libegl1 libgl1-mesa-dri fonts-dejavu-core fonts-stix
           python -m pip install numpy pillow
       - name: Render Pearcey T-build
         env:
           EGL_PLATFORM: surfaceless
           LIBGL_ALWAYS_SOFTWARE: "1"
         run: python "Eli's wiggert calendar/Trevor Pearcey/render_pearcey.py"
-      - name: Validate Pearcey math and render sequence
+      - name: Validate Pearcey math and base render
         env:
           EGL_PLATFORM: surfaceless
           LIBGL_ALWAYS_SOFTWARE: "1"
         run: python "Eli's wiggert calendar/Trevor Pearcey/validate_render.py"
+      - name: Build revised presentation
+        run: |
+          python "Eli's wiggert calendar/Trevor Pearcey/revise_preview.py"
+          python "Eli's wiggert calendar/Trevor Pearcey/revise_preview.py" --small
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: pearcey-wegert-t-build
           path: |
             Eli's wiggert calendar/Trevor Pearcey/pearcey-T-build-wegert.mp4
+            Eli's wiggert calendar/Trevor Pearcey/pearcey-T-build-wegert-v2.mp4
+            Eli's wiggert calendar/Trevor Pearcey/pearcey-T-build-wegert-v2-small.mp4
             Eli's wiggert calendar/Trevor Pearcey/pearcey-final-frame.png
           if-no-files-found: error
