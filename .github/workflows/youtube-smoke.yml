@@ -45,6 +45,10 @@ jobs:
           make -j2
           make install
           echo "$RUNNER_TEMP/python2/bin" >> "$GITHUB_PATH"
+      - name: Install Grease build and media tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreadline-dev ffmpeg jq curl imagemagick
       - name: Build Grease dev runtime
         run: |
           cd .grease/source
@@ -53,10 +57,6 @@ jobs:
         env:
           AICI_BIN: ${{ runner.temp }}/aici
         run: .grease/source/bin/ysh ci/test_ai_ci_consumer.ysh
-      - name: Install media tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg jq curl imagemagick
       - name: Exercise uploader under Grease
         run: |
           mkdir -p /tmp/yt-shorts-ci
