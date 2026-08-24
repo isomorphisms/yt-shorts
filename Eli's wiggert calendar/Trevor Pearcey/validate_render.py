@@ -67,8 +67,8 @@ def check_math(base) -> None:
 
 
 def check_typography(revision) -> None:
-    # The presentation should expose only the precision that is useful to a
-    # viewer, while keeping the mathematical sign and symmetry explicit.
+    # The moving display is deliberately qualitative: tenths, symmetric bounds,
+    # and a real mathematical minus rather than text/programming notation.
     expect(revision.display_t(1.14) == 1.1, "moving T readout is not rounded to one decimal")
     expect(revision.display_t(1.16) == 1.2, "moving T readout does not advance by tenths")
     expect(
@@ -80,24 +80,48 @@ def check_typography(revision) -> None:
         "symmetric bounds must advance with T: −1.2 to 1.2",
     )
     expect(
-        revision.cutoff_for_time(0.0) < revision.cutoff_for_time(5.0) < revision.cutoff_for_time(10.0),
+        revision.integral_expression(1.14) == r"$\int_{-1.1}^{1.1}$",
+        "moving integral is not typeset with the current symmetric cutoff",
+    )
+    expect(
+        r"\lim_{T\to\infty}" in revision.DEFINITION,
+        "Pearcey definition is missing the T→∞ limit",
+    )
+    expect(
+        r"\int_{-T}^{T}" in revision.DEFINITION,
+        "Pearcey definition is missing symmetric -T,T integral limits",
+    )
+    expect("t^4" in revision.DEFINITION and "y t^2" in revision.DEFINITION,
+           "Pearcey definition is missing exponent powers")
+
+    # Render the actual MathText rather than merely accepting a syntactically
+    # plausible string. This catches unsupported/missing-glyph regressions in
+    # the presentation path that the old hand-selected italic font allowed.
+    definition_image = revision.math_rgba(revision.DEFINITION, 27)
+    integral_image = revision.math_rgba(revision.integral_expression(1.1), 28)
+    expect(definition_image.width >= 550 and definition_image.height >= 70,
+           f"typeset definition has implausible extent {definition_image.size}")
+    expect(integral_image.width >= 80 and integral_image.height >= 70,
+           f"typeset moving integral has implausible extent {integral_image.size}")
+
+    expect(
+        revision.cutoff_for_time(0.0)
+        < revision.cutoff_for_time(5.0)
+        < revision.cutoff_for_time(10.0),
         "displayed truncation cutoff does not grow through the build",
     )
 
     source = REVISION_RENDERER.read_text()
     for required in (
-        "T → ∞",
-        "−T",
-        "∫",
-        "t⁴",
-        "yt²",
+        "math_to_image",
         "27x² + 8y³ = 0",
         "CAUSTIC OVERLAY",
         "draw_dashed_polyline",
         "draw_cutoff_overlay",
-        "axis_y",
+        "make_lower_video",
+        "fps={fps},tpad=stop_mode=clone",
     ):
-        expect(required in source, f"revised compositor is missing typography/overlay marker {required!r}")
+        expect(required in source, f"revised compositor is missing presentation marker {required!r}")
     expect("integration interval" not in source.lower(),
            "interval indicator should be mathematical notation, not a prose control label")
 
@@ -155,52 +179,61 @@ def check_video_shape(path: Path, expected_width: int, expected_height: int, exp
            f"{path.name} is {fps:g} fps, expected {expected_fps:g}")
 
 
+def check_timeline(path: Path, scale: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    build_early = frame_at(path, 2.0)
+    build_late = frame_at(path, 8.0)
+    clean_early = frame_at(path, 12.5)
+    clean_late = frame_at(path, 17.0)
+
+    field = slice(round(300 * scale), round(840 * scale))
+    indicator = slice(round(930 * scale), round(1130 * scale))
+    build_field_change = mean_difference(build_early[field], build_late[field])
+    indicator_change = changed_pixels(build_early[indicator], build_late[indicator])
+    clean_field_drift = mean_difference(clean_early[field], clean_late[field])
+
+    expect(build_field_change >= 1.0,
+           f"{path.name}: Pearcey field barely changes while T grows ({build_field_change:.3f})")
+    expect(indicator_change >= round(300 * scale * scale),
+           f"{path.name}: interval/integral indicator does not visibly change ({indicator_change} pixels)")
+    expect(clean_field_drift <= 0.75,
+           f"{path.name}: final field is still changing during the hold ({clean_field_drift:.3f})")
+
+    print(
+        f"timeline {path.name}: build {build_field_change:.3f}; "
+        f"interval pixels {indicator_change}; hold drift {clean_field_drift:.3f}"
+    )
+    return clean_late, field, indicator
+
+
 def check_revision_sequence() -> None:
     check_video_shape(FULL_VIDEO, 720, 1280, 30.0)
     check_video_shape(SMALL_VIDEO, 360, 640, 15.0)
-    if not FULL_VIDEO.is_file():
+    if not FULL_VIDEO.is_file() or not SMALL_VIDEO.is_file():
         return
 
-    build_early = frame_at(FULL_VIDEO, 2.0)
-    build_late = frame_at(FULL_VIDEO, 8.0)
-    clean_early = frame_at(FULL_VIDEO, 12.5)
-    clean_late = frame_at(FULL_VIDEO, 17.0)
+    # Check both outputs. The old preview accidentally stretched 30-fps source
+    # frames onto a 15-fps clock, so its field and T readout disagreed even while
+    # the full version looked temporally plausible.
+    clean_late, field, _ = check_timeline(FULL_VIDEO, 1.0)
+    check_timeline(SMALL_VIDEO, 0.5)
+
     label_only = frame_at(FULL_VIDEO, 18.5)
     with_curve = frame_at(FULL_VIDEO, 19.5)
 
-    # The field and the interval indicator should both move while T grows.
-    field = slice(300, 840)
-    build_field_change = mean_difference(build_early[field, :, :], build_late[field, :, :])
-    expect(build_field_change >= 1.0,
-           f"Pearcey field barely changes while T grows ({build_field_change:.3f})")
-    indicator = slice(930, 1140)
-    indicator_change = changed_pixels(build_early[indicator], build_late[indicator])
-    expect(indicator_change >= 300,
-           f"moving interval/integral indicator does not visibly change ({indicator_change} pixels)")
-
-    # The final natural field should sit still for several seconds even though
-    # the final T=3.0 notation remains visible below it.
-    clean_field_drift = mean_difference(clean_early[field, :, :], clean_late[field, :, :])
-    expect(clean_field_drift <= 0.75,
-           f"natural final field is still changing (mean drift {clean_field_drift:.3f})")
-
-    # At 18.5 s the label has appeared but the field itself must still be clean.
-    label_field_change = mean_difference(clean_late[field, :, :], label_only[field, :, :])
+    # At 18.5 s the explanatory label is present but the field itself is clean.
+    label_field_change = mean_difference(clean_late[field], label_only[field])
     expect(label_field_change <= 0.75,
-           f"curve appears before its overlay label has had time to establish itself ({label_field_change:.3f})")
+           f"curve appears before its label has established itself ({label_field_change:.3f})")
     label_region_change = changed_pixels(clean_late[1120:1260], label_only[1120:1260])
     expect(label_region_change >= 300,
-           f"CAUSTIC OVERLAY label is not visibly present before the curve ({label_region_change} changed pixels)")
+           f"CAUSTIC OVERLAY label is not visibly present before the curve ({label_region_change} pixels)")
 
-    # A second, later change must occur inside the field when the dashed curve is added.
-    curve_change = changed_pixels(label_only[field, :, :], with_curve[field, :, :])
+    # A second, later change occurs inside the field when the dashed curve appears.
+    curve_change = changed_pixels(label_only[field], with_curve[field])
     expect(curve_change >= 300,
-           f"dashed caustic curve is not visibly added after the label ({curve_change} changed field pixels)")
+           f"dashed caustic curve is not visibly added after the label ({curve_change} pixels)")
 
-    print(
-        f"sequence: build field {build_field_change:.3f}; interval pixels {indicator_change}; "
-        f"clean field drift {clean_field_drift:.3f}; label pixels {label_region_change}; curve pixels {curve_change}"
-    )
+    print(f"overlay: label pixels {label_region_change}; curve pixels {curve_change}")
 
 
 def main() -> None:
