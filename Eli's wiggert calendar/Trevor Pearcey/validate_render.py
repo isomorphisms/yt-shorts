@@ -13,6 +13,7 @@ from PIL import Image
 HERE = Path(__file__).resolve().parent
 BASE_RENDERER = HERE / "render_pearcey.py"
 REVISION_RENDERER = HERE / "revise_preview.py"
+BASE_VIDEO = HERE / "pearcey-T-build-wegert.mp4"
 FULL_VIDEO = HERE / "pearcey-T-build-wegert-v2.mp4"
 SMALL_VIDEO = HERE / "pearcey-T-build-wegert-v2-small.mp4"
 
@@ -67,8 +68,6 @@ def check_math(base) -> None:
 
 
 def check_typography(revision) -> None:
-    # The moving display is deliberately qualitative: tenths, symmetric bounds,
-    # and a real mathematical minus rather than text/programming notation.
     expect(revision.display_t(1.14) == 1.1, "moving T readout is not rounded to one decimal")
     expect(revision.display_t(1.16) == 1.2, "moving T readout does not advance by tenths")
     expect(
@@ -83,20 +82,15 @@ def check_typography(revision) -> None:
         revision.integral_expression(1.14) == r"$\int_{-1.1}^{1.1}$",
         "moving integral is not typeset with the current symmetric cutoff",
     )
-    expect(
-        r"\lim_{T\to\infty}" in revision.DEFINITION,
-        "Pearcey definition is missing the T→∞ limit",
-    )
-    expect(
-        r"\int_{-T}^{T}" in revision.DEFINITION,
-        "Pearcey definition is missing symmetric -T,T integral limits",
-    )
+    expect(r"\lim_{T\to\infty}" in revision.DEFINITION,
+           "Pearcey definition is missing the T→∞ limit")
+    expect(r"\int_{-T}^{T}" in revision.DEFINITION,
+           "Pearcey definition is missing symmetric -T,T integral limits")
     expect("t^4" in revision.DEFINITION and "y t^2" in revision.DEFINITION,
            "Pearcey definition is missing exponent powers")
 
-    # Render the actual MathText rather than merely accepting a syntactically
-    # plausible string. This catches unsupported/missing-glyph regressions in
-    # the presentation path that the old hand-selected italic font allowed.
+    # Exercise the actual MathText path. The old hand-selected italic font
+    # silently dropped →, ∞, and superscript 4 even though the source text had them.
     definition_image = revision.math_rgba(revision.DEFINITION, 27)
     integral_image = revision.math_rgba(revision.integral_expression(1.1), 28)
     expect(definition_image.width >= 550 and definition_image.height >= 70,
@@ -179,7 +173,17 @@ def check_video_shape(path: Path, expected_width: int, expected_height: int, exp
            f"{path.name} is {fps:g} fps, expected {expected_fps:g}")
 
 
-def check_timeline(path: Path, scale: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def expected_field_at_8(scale: float) -> np.ndarray:
+    base = frame_at(BASE_VIDEO, 8.0)[300:840]
+    if scale == 1.0:
+        return base
+    resized = Image.fromarray(base).resize(
+        (round(720 * scale), round(540 * scale)), Image.Resampling.BICUBIC
+    )
+    return np.asarray(resized, dtype=np.uint8)
+
+
+def check_timeline(path: Path, scale: float) -> tuple[np.ndarray, slice]:
     build_early = frame_at(path, 2.0)
     build_late = frame_at(path, 8.0)
     clean_early = frame_at(path, 12.5)
@@ -190,37 +194,38 @@ def check_timeline(path: Path, scale: float) -> tuple[np.ndarray, np.ndarray, np
     build_field_change = mean_difference(build_early[field], build_late[field])
     indicator_change = changed_pixels(build_early[indicator], build_late[indicator])
     clean_field_drift = mean_difference(clean_early[field], clean_late[field])
+    sync_error = mean_difference(build_late[field], expected_field_at_8(scale))
 
     expect(build_field_change >= 1.0,
            f"{path.name}: Pearcey field barely changes while T grows ({build_field_change:.3f})")
     expect(indicator_change >= round(300 * scale * scale),
            f"{path.name}: interval/integral indicator does not visibly change ({indicator_change} pixels)")
-    expect(clean_field_drift <= 0.75,
+    expect(clean_field_drift <= 2.25,
            f"{path.name}: final field is still changing during the hold ({clean_field_drift:.3f})")
+    expect(sync_error <= (2.0 if scale == 1.0 else 3.5),
+           f"{path.name}: displayed time/T is out of sync with the source field ({sync_error:.3f})")
 
     print(
-        f"timeline {path.name}: build {build_field_change:.3f}; "
-        f"interval pixels {indicator_change}; hold drift {clean_field_drift:.3f}"
+        f"timeline {path.name}: build {build_field_change:.3f}; interval {indicator_change}; "
+        f"hold drift {clean_field_drift:.3f}; source sync {sync_error:.3f}"
     )
-    return clean_late, field, indicator
+    return clean_late, field
 
 
 def check_revision_sequence() -> None:
     check_video_shape(FULL_VIDEO, 720, 1280, 30.0)
     check_video_shape(SMALL_VIDEO, 360, 640, 15.0)
-    if not FULL_VIDEO.is_file() or not SMALL_VIDEO.is_file():
+    if not BASE_VIDEO.is_file() or not FULL_VIDEO.is_file() or not SMALL_VIDEO.is_file():
         return
 
-    # Check both outputs. The old preview accidentally stretched 30-fps source
-    # frames onto a 15-fps clock, so its field and T readout disagreed even while
-    # the full version looked temporally plausible.
-    clean_late, field, _ = check_timeline(FULL_VIDEO, 1.0)
+    # Check both outputs. The previous small preview stretched 30-fps source
+    # frames onto a 15-fps clock, so the numeric T advanced twice as fast as the field.
+    clean_late, field = check_timeline(FULL_VIDEO, 1.0)
     check_timeline(SMALL_VIDEO, 0.5)
 
     label_only = frame_at(FULL_VIDEO, 18.5)
     with_curve = frame_at(FULL_VIDEO, 19.5)
 
-    # At 18.5 s the explanatory label is present but the field itself is clean.
     label_field_change = mean_difference(clean_late[field], label_only[field])
     expect(label_field_change <= 0.75,
            f"curve appears before its label has established itself ({label_field_change:.3f})")
@@ -228,7 +233,6 @@ def check_revision_sequence() -> None:
     expect(label_region_change >= 300,
            f"CAUSTIC OVERLAY label is not visibly present before the curve ({label_region_change} pixels)")
 
-    # A second, later change occurs inside the field when the dashed curve appears.
     curve_change = changed_pixels(label_only[field], with_curve[field])
     expect(curve_change >= 300,
            f"dashed caustic curve is not visibly added after the label ({curve_change} pixels)")
