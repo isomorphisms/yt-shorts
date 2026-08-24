@@ -2,6 +2,8 @@
 
 `suite.tsv` is the first repository consumer of the deterministic kernel from
 `isomorphisms/ai-ci`. The workflow pins that kernel by full commit SHA.
+This first integration is deliberately scoped to `.github/workflows/youtube-smoke.yml`;
+the separate publish-capable upload workflow is not part of this suite.
 
 The consumer regression harness mutates this repository's own workflow,
 release fixture, scripts, and evaluation manifest. It requires the first
