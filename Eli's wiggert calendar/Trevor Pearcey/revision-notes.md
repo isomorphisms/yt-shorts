@@ -17,3 +17,5 @@ Next visual pass:
 Timing direction: longer overall, faster early zoom-out, longer final hold.
 
 Current timing contract: the camera reaches the full field at 5.5 seconds, the cutoff reaches `T = 3.0` at 6 seconds, and both then hold still on the unmarked Wegert field until the caustic label at 18 seconds and dashed curve at 19 seconds.
+
+Verification: the regenerated small preview and the full CI render both complete the changing bounds by 6 seconds, remain visually fixed through 17 seconds, and preserve the delayed 18/19-second explanatory sequence.
