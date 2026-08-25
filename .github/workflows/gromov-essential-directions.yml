@@ -39,12 +39,28 @@ jobs:
         shell: sh
         env:
           GROMOV_SCENE: ${{ github.workspace }}/yt-shorts/Mikhail Gromov/Curvature, diameter and Betti numbers/episodes/essential-directions/scene.pi
+          ITHON_ROOT: ${{ github.workspace }}/ithon
         run: |
-          PYTHONPATH="$GITHUB_WORKSPACE/ithon/Lib" python3 - "$GROMOV_SCENE" <<'PY'
+          python3 - "$GROMOV_SCENE" "$ITHON_ROOT" <<'PY'
+          import importlib.util
+          from pathlib import Path
           import sys
-          from ithon_frontend import check_file
 
-          check_file(sys.argv[1])
+          scene = sys.argv[1]
+          root = Path(sys.argv[2])
+
+          def load(name, path):
+              spec = importlib.util.spec_from_file_location(name, path)
+              if spec is None or spec.loader is None:
+                  raise ImportError(f"could not load {name} from {path}")
+              module = importlib.util.module_from_spec(spec)
+              sys.modules[name] = module
+              spec.loader.exec_module(module)
+              return module
+
+          load("ithon_static", root / "Lib" / "ithon_static.py")
+          frontend = load("ithon_frontend", root / "Lib" / "ithon_frontend.py")
+          frontend.check_file(scene)
           PY
       - name: Install render dependencies
         shell: sh
