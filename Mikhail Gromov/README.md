@@ -7,14 +7,15 @@ Do not assign one Short per paper, chapter, or page. Gromov often puts several d
 ## Priority order for mining
 
 1. **Sign and Geometric Meaning of Curvature** — begin here. Its opening pages deliberately move between infinitesimal formulas and visual geometry, and already contain several separate Shorts.
-2. **Metric Structures for Riemannian and Non-Riemannian Spaces** — large reservoir of metric/geometric language; needs careful page-by-page extraction.
-3. **Filling Riemannian Manifolds** — systoles, filling radius/volume, and global metric inequalities.
-4. **Hyperbolic Groups** — thin triangles, trees and Cayley-graph growth give good visual doors into the subject.
-5. **Groups of Polynomial Growth and Expanding Maps** — growth of balls in a Cayley graph is an accessible first picture even though the theorem is deep.
-6. **Pseudo-holomorphic Curves in Symplectic Manifolds** — historically central, but likely needs more setup than the first five lanes.
-7. **Partial Differential Relations** — h-principle/flexibility material; promising but should be extracted slowly enough not to turn a subtle statement into a slogan.
-8. **Four Lectures on Scalar Curvature** — newer long-form source with elementary geometric material near the beginning.
-9. **Isoperimetry of Waists and Concentration of Maps** — a high-dimensional “some fiber must remain large” picture may work after the exact formulation is chosen.
+2. **[Curvature, diameter and Betti numbers](Curvature,%20diameter%20and%20Betti%20numbers/README.md)** — distance-function critical points, Toponogov comparison, angular packing of “essential directions,” ball coverings, and the passage from controlled cover complexity to bounded homology. The paper-specific folder contains section-by-section notes, equation purposes, source/reuse boundaries, and the first Manimi visual plan.
+3. **Metric Structures for Riemannian and Non-Riemannian Spaces** — large reservoir of metric/geometric language; needs careful page-by-page extraction.
+4. **Filling Riemannian Manifolds** — systoles, filling radius/volume, and global metric inequalities.
+5. **Hyperbolic Groups** — thin triangles, trees and Cayley-graph growth give good visual doors into the subject.
+6. **Groups of Polynomial Growth and Expanding Maps** — growth of balls in a Cayley graph is an accessible first picture even though the theorem is deep.
+7. **Pseudo-holomorphic Curves in Symplectic Manifolds** — historically central, but likely needs more setup than the first six lanes.
+8. **Partial Differential Relations** — h-principle/flexibility material; promising but should be extracted slowly enough not to turn a subtle statement into a slogan.
+9. **Four Lectures on Scalar Curvature** — newer long-form source with elementary geometric material near the beginning.
+10. **Isoperimetry of Waists and Concentration of Maps** — a high-dimensional “some fiber must remain large” picture may work after the exact formulation is chosen.
 
 ## Source discipline
 
