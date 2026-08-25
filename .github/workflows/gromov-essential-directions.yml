@@ -35,6 +35,17 @@ jobs:
           repository: isomorphisms/ithon
           ref: 2e0d634550ecf2eb78315c2c165fe0e85ea1980c
           path: ithon
+      - name: Static-check Ithon scene
+        shell: sh
+        env:
+          GROMOV_SCENE: ${{ github.workspace }}/yt-shorts/Mikhail Gromov/Curvature, diameter and Betti numbers/episodes/essential-directions/scene.pi
+        run: |
+          PYTHONPATH="$GITHUB_WORKSPACE/ithon/Lib" python3 - "$GROMOV_SCENE" <<'PY'
+          import sys
+          from ithon_frontend import check_file
+
+          check_file(sys.argv[1])
+          PY
       - name: Install render dependencies
         shell: sh
         run: |
@@ -62,18 +73,11 @@ jobs:
             --vcodec libx264 --pix_fmt yuv420p \
             --video_dir "$GITHUB_WORKSPACE/rendered" \
             --file_name gromov-essential-directions -q
-      - name: Verify review encode
-        shell: sh
-        run: |
-          video=$(find "$GITHUB_WORKSPACE/rendered" -type f -name 'gromov-essential-directions.mp4' -print -quit)
-          test -n "$video"
-          test -s "$video"
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$video")" = 540
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$video")" = 960
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 "$video")" = h264
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=pix_fmt -of csv=p=0 "$video")" = yuv420p
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of csv=p=0 "$video")" = 30/1
-          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$video"
+      - name: Verify finished video contract
+        uses: isomorphisms/ai-ci/video@1ecde1ff3bcea2de371e9198ef49aad8d1f91315
+        with:
+          contract: ${{ github.workspace }}/yt-shorts/Mikhail Gromov/Curvature, diameter and Betti numbers/episodes/essential-directions/video.contract.tsv
+          root: ${{ github.workspace }}/rendered
       - name: Upload review render
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
