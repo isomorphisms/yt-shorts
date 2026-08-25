@@ -1,0 +1,82 @@
+name: Gromov essential directions Manimi render
+
+on:
+  push:
+    paths:
+      - .github/workflows/gromov-essential-directions.yml
+      - Mikhail Gromov/Curvature, diameter and Betti numbers/episodes/essential-directions/**
+  pull_request:
+    paths:
+      - .github/workflows/gromov-essential-directions.yml
+      - Mikhail Gromov/Curvature, diameter and Betti numbers/episodes/essential-directions/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out Short source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yt-shorts
+      - name: Check out pinned Manimi
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: isomorphisms/manimi
+          ref: e4f8ab7b7033052787ee7561de67b63b68ddb2dd
+          path: manimi
+      - name: Check out pinned Ithon
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: isomorphisms/ithon
+          ref: 2e0d634550ecf2eb78315c2c165fe0e85ea1980c
+          path: ithon
+      - name: Install render dependencies
+        shell: sh
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            ffmpeg python3-venv pkg-config libpango1.0-dev libcairo2-dev \
+            libvulkan1 mesa-vulkan-drivers fonts-dejavu-core
+          python3 -m venv .venv
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install -e ./manimi
+      - name: Render checked Ithon scene
+        shell: sh
+        env:
+          ITHON_COMMAND: ${{ github.workspace }}/ithon/ithon
+          MANIMI_PYTHON: ${{ github.workspace }}/.venv/bin/python
+          MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
+          WGPU_BACKEND_TYPE: Vulkan
+          XDG_CACHE_HOME: ${{ runner.temp }}/cache
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/rendered"
+          ./manimi/bin/manimi \
+            "$GITHUB_WORKSPACE/yt-shorts/Mikhail Gromov/Curvature, diameter and Betti numbers/episodes/essential-directions/scene.pi" \
+            GromovEssentialDirections \
+            -w -r 540x960 --fps 30 \
+            --vcodec libx264 --pix_fmt yuv420p \
+            --video_dir "$GITHUB_WORKSPACE/rendered" \
+            --file_name gromov-essential-directions -q
+      - name: Verify review encode
+        shell: sh
+        run: |
+          video=$(find "$GITHUB_WORKSPACE/rendered" -type f -name 'gromov-essential-directions.mp4' -print -quit)
+          test -n "$video"
+          test -s "$video"
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$video")" = 540
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$video")" = 960
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 "$video")" = h264
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=pix_fmt -of csv=p=0 "$video")" = yuv420p
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of csv=p=0 "$video")" = 30/1
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$video"
+      - name: Upload review render
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: gromov-essential-directions-review
+          path: rendered/**/*.mp4
+          if-no-files-found: error
