@@ -1,0 +1,268 @@
+from manimlib import Arc
+from manimlib import Circle
+from manimlib import DEG
+from manimlib import Dot
+from manimlib import DOWN
+from manimlib import FadeIn
+from manimlib import FadeOut
+from manimlib import LEFT
+from manimlib import Line
+from manimlib import ORIGIN
+from manimlib import RIGHT
+from manimlib import Scene
+from manimlib import ShowCreation
+from manimlib import Text
+from manimlib import UP
+from manimlib import VGroup
+from manimlib import Write
+
+
+class GromovEssentialDirections(Scene):
+    def construct(self ∈ GromovEssentialDirections) → None:
+        ink ← "#F2F2EC"
+        muted ← "#8D9098"
+        cyan ← "#58C8E8"
+        yellow ← "#F2C14E"
+        red ← "#EE6C66"
+        green ← "#8FD694"
+        font ← "DejaVu Sans"
+
+        title ← Text(
+            "Why curvature limits directions",
+            font=font,
+            font_size=38,
+            color=ink,
+        )
+        title.set_width(3.9)
+        title.to_edge(UP, buff=0.28)
+
+        hypothesis ← Text(
+            "nonnegative sectional curvature",
+            font=font,
+            font_size=22,
+            color=muted,
+        )
+        hypothesis.set_width(3.45)
+        hypothesis.next_to(title, DOWN, buff=0.16)
+
+        source ← Text(
+            "Gromov 1981 · §§1.4–1.5, 3.1",
+            font=font,
+            font_size=17,
+            color=muted,
+        )
+        source.set_width(3.65)
+        source.to_edge(DOWN, buff=0.16)
+
+        self.play(Write(title), run_time=0.7)
+        self.play(FadeIn(hypothesis), run_time=0.35)
+        self.add(source)
+
+        x ← 0.90 * DOWN
+        x_dot ← Dot(x, radius=0.075, color=ink)
+        x_label ← Text("x", font=font, font_size=24, color=ink)
+        x_label.next_to(x_dot, DOWN, buff=0.10)
+
+        far ← x + 0.96 * RIGHT + 2.63 * UP
+        near_bad ← x + 0.34 * RIGHT + 1.26 * UP
+        near_good ← x + 0.87 * RIGHT + 0.97 * UP
+
+        far_line ← Line(x, far, color=cyan, stroke_width=6)
+        far_dot ← Dot(far, radius=0.075, color=cyan)
+        far_label ← Text("far critical point", font=font, font_size=20, color=cyan)
+        far_label.set_width(1.55)
+        far_label.next_to(far_dot, LEFT, buff=0.12)
+
+        scale_note ← Text(
+            "far distance ≥ 2 × near distance",
+            font=font,
+            font_size=22,
+            color=yellow,
+        )
+        scale_note.set_width(3.55)
+        scale_note.move_to(2.55 * DOWN)
+
+        self.play(FadeIn(x_dot), run_time=0.25)
+        self.add(x_label)
+        self.play(ShowCreation(far_line), run_time=0.55)
+        self.play(FadeIn(far_dot), run_time=0.20)
+        self.add(far_label)
+        self.play(Write(scale_note), run_time=0.55)
+
+        bad_line ← Line(x, near_bad, color=red, stroke_width=6)
+        bad_dot ← Dot(near_bad, radius=0.070, color=red)
+        bad_arc ← Arc(
+            radius=0.42,
+            start_angle=70 * DEG,
+            angle=5 * DEG,
+            arc_center=x,
+            color=red,
+            stroke_width=6,
+        )
+        bad_note ← Text(
+            "too close: 5° < 1/6 rad",
+            font=font,
+            font_size=23,
+            color=red,
+        )
+        bad_note.set_width(3.15)
+        bad_note.move_to(1.92 * DOWN)
+
+        self.play(ShowCreation(bad_line), run_time=0.45)
+        self.play(FadeIn(bad_dot), run_time=0.18)
+        self.play(ShowCreation(bad_arc), run_time=0.30)
+        self.play(Write(bad_note), run_time=0.45)
+        self.wait(0.45)
+
+        bad_group ← VGroup(bad_line, bad_dot, bad_arc, bad_note)
+        self.play(FadeOut(bad_group), run_time=0.35)
+
+        good_line ← Line(x, near_good, color=green, stroke_width=6)
+        good_dot ← Dot(near_good, radius=0.070, color=green)
+        good_arc ← Arc(
+            radius=0.48,
+            start_angle=48 * DEG,
+            angle=22 * DEG,
+            arc_center=x,
+            color=green,
+            stroke_width=6,
+        )
+        good_note ← Text(
+            "comparison forces angle > 1/6 rad",
+            font=font,
+            font_size=22,
+            color=green,
+        )
+        good_note.set_width(3.55)
+        good_note.move_to(1.92 * DOWN)
+
+        self.play(ShowCreation(good_line), run_time=0.45)
+        self.play(FadeIn(good_dot), run_time=0.18)
+        self.play(ShowCreation(good_arc), run_time=0.30)
+        self.play(Write(good_note), run_time=0.55)
+        self.wait(0.70)
+
+        first_panel ← VGroup(
+            x_dot,
+            x_label,
+            far_line,
+            far_dot,
+            far_label,
+            scale_note,
+            good_line,
+            good_dot,
+            good_arc,
+            good_note,
+        )
+        self.play(FadeOut(first_panel), run_time=0.45)
+
+        center ← 0.35 * DOWN
+        direction_circle ← Circle(radius=1.48, color=muted, stroke_width=3)
+        direction_circle.move_to(center)
+        center_dot ← Dot(center, radius=0.070, color=ink)
+
+        ray_0 ← Line(center, center + 1.40 * RIGHT, color=cyan, stroke_width=4)
+        ray_1 ← Line(center, center + 0.99 * RIGHT + 0.99 * UP, color=cyan, stroke_width=4)
+        ray_2 ← Line(center, center + 1.40 * UP, color=cyan, stroke_width=4)
+        ray_3 ← Line(center, center + 0.99 * LEFT + 0.99 * UP, color=cyan, stroke_width=4)
+        ray_4 ← Line(center, center + 1.40 * LEFT, color=cyan, stroke_width=4)
+        ray_5 ← Line(center, center + 0.99 * LEFT + 0.99 * DOWN, color=cyan, stroke_width=4)
+        ray_6 ← Line(center, center + 1.40 * DOWN, color=cyan, stroke_width=4)
+        ray_7 ← Line(center, center + 0.99 * RIGHT + 0.99 * DOWN, color=cyan, stroke_width=4)
+        rays ← VGroup(ray_0, ray_1, ray_2, ray_3, ray_4, ray_5, ray_6, ray_7)
+
+        tangent_note ← Text(
+            "schematic tangent-space picture",
+            font=font,
+            font_size=19,
+            color=muted,
+        )
+        tangent_note.set_width(3.15)
+        tangent_note.move_to(2.45 * DOWN)
+
+        packing_note ← Text(
+            "every pair needs a fixed angular gap",
+            font=font,
+            font_size=22,
+            color=yellow,
+        )
+        packing_note.set_width(3.55)
+        packing_note.move_to(2.02 * UP)
+
+        self.play(ShowCreation(direction_circle), run_time=0.45)
+        self.add(center_dot)
+        self.play(ShowCreation(rays), run_time=0.85)
+        self.play(Write(packing_note), run_time=0.50)
+        self.add(tangent_note)
+
+        collision ← Line(
+            center,
+            center + 1.395 * RIGHT + 0.098 * UP,
+            color=red,
+            stroke_width=7,
+        )
+        collision_note ← Text(
+            "too close",
+            font=font,
+            font_size=23,
+            color=red,
+        )
+        collision_note.move_to(1.68 * DOWN)
+        self.play(ShowCreation(collision), run_time=0.45)
+        self.play(Write(collision_note), run_time=0.35)
+        self.wait(0.55)
+
+        finite ← Text(
+            "only finitely many\n“essential directions”",
+            font=font,
+            font_size=31,
+            color=green,
+        )
+        finite.set_width(3.35)
+        finite.move_to(2.55 * UP)
+        self.play(FadeOut(packing_note), run_time=0.25)
+        self.play(FadeIn(finite), run_time=0.50)
+        self.wait(0.65)
+
+        fan_panel ← VGroup(
+            direction_circle,
+            center_dot,
+            rays,
+            collision,
+            collision_note,
+            tangent_note,
+            finite,
+        )
+        self.play(FadeOut(fan_panel), run_time=0.45)
+
+        cover_title ← Text(
+            "geometry now controls a cover by balls",
+            font=font,
+            font_size=23,
+            color=ink,
+        )
+        cover_title.set_width(3.65)
+        cover_title.move_to(2.55 * UP)
+
+        ball_1 ← Circle(radius=0.62, color=cyan, stroke_width=4).move_to(0.55 * LEFT + 0.75 * UP)
+        ball_2 ← Circle(radius=0.62, color=green, stroke_width=4).move_to(0.55 * RIGHT + 0.75 * UP)
+        ball_3 ← Circle(radius=0.62, color=yellow, stroke_width=4).move_to(0.95 * LEFT + 0.20 * DOWN)
+        ball_4 ← Circle(radius=0.62, color=cyan, stroke_width=4).move_to(ORIGIN + 0.12 * DOWN)
+        ball_5 ← Circle(radius=0.62, color=green, stroke_width=4).move_to(0.95 * RIGHT + 0.20 * DOWN)
+        ball_6 ← Circle(radius=0.62, color=yellow, stroke_width=4).move_to(0.48 * LEFT + 1.12 * DOWN)
+        ball_7 ← Circle(radius=0.62, color=cyan, stroke_width=4).move_to(0.48 * RIGHT + 1.12 * DOWN)
+        cover ← VGroup(ball_1, ball_2, ball_3, ball_4, ball_5, ball_6, ball_7)
+
+        finale ← Text(
+            "controlled directions\n→ controlled covers\n→ bounded Betti numbers",
+            font=font,
+            font_size=30,
+            color=ink,
+        )
+        finale.set_width(3.40)
+        finale.move_to(2.45 * DOWN)
+
+        self.play(Write(cover_title), run_time=0.55)
+        self.play(ShowCreation(cover), run_time=0.85)
+        self.play(Write(finale), run_time=0.80)
+        self.wait(1.35)
