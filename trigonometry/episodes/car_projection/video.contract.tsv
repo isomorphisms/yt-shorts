@@ -1,0 +1,19 @@
+# This contract belongs to the fixed-55-mph car-projection episode. The times,
+# regions, and MAE thresholds describe this storyboard, not universal motion rules.
+video_decode	CAR-PROJECTION-DECODE	car-projection-55mph.mp4
+video_dimensions	CAR-PROJECTION-SHAPE	car-projection-55mph.mp4	540	960
+video_duration	CAR-PROJECTION-DURATION	car-projection-55mph.mp4	12.30	12.65
+video_fps	CAR-PROJECTION-FPS	car-projection-55mph.mp4	30	0.01
+video_audio	CAR-PROJECTION-AUDIO	car-projection-55mph.mp4	absent
+video_encoding	CAR-PROJECTION-ENCODING	car-projection-55mph.mp4	h264	yuv420p
+
+# The road/vector picture must materially change from the 0-degree state to
+# the 30-degree state while the fixed-radius speed circle stays in place.
+video_frame_mae	CAR-PROJECTION-ROTATES	car-projection-55mph.mp4	3.30	8.20	20	225	500	470	1.0	255
+
+# The completed 30-degree projection triangle holds long enough to read.
+video_frame_mae	CAR-PROJECTION-30-HOLD	car-projection-55mph.mp4	8.10	8.55	35	245	470	430	0	1
+
+# The closing numerical comparison must be a distinct final beat after the
+# geometric road/vector panel disappears.
+video_frame_mae	CAR-PROJECTION-SUMMARY-APPEARS	car-projection-55mph.mp4	9.25	10.55	35	205	470	520	3.0	255
