@@ -1,0 +1,25 @@
+# This contract belongs to the Gromov essential-directions episode. The times,
+# regions, and MAE thresholds describe its storyboard witnesses, not universal
+# pacing or motion rules.
+video_decode	GROMOV-DECODE	gromov-essential-directions.mp4
+video_dimensions	GROMOV-SHAPE	gromov-essential-directions.mp4	540	960
+video_duration	GROMOV-DURATION	gromov-essential-directions.mp4	16.25	16.50
+video_fps	GROMOV-FPS	gromov-essential-directions.mp4	30	0.01
+video_audio	GROMOV-AUDIO	gromov-essential-directions.mp4	absent
+video_encoding	GROMOV-ENCODING	gromov-essential-directions.mp4	h264	yuv420p
+
+# The first geometry panel must actually replace the rejected close direction
+# by the separated direction. Accepted review MAE: about 3.31.
+video_frame_mae	GROMOV-ANGLE-CORRECTS	gromov-essential-directions.mp4	4.20	6.50	60	230	420	480	1.5	255
+
+# Once the extra red ray has collided with the existing fan, the picture holds
+# long enough to read before the conclusion appears. Accepted review MAE: about 0.33.
+video_frame_mae	GROMOV-FAN-HOLD	gromov-essential-directions.mp4	10.10	10.45	45	220	450	580	0	1
+
+# The phrase “essential directions” must enter after the angular-packing beat.
+# Accepted review MAE: about 22.01.
+video_frame_mae	GROMOV-ESSENTIAL-APPEARS	gromov-essential-directions.mp4	10.65	11.50	50	160	440	170	10	255
+
+# The final consequence is a distinct last beat, after the ball cover has formed.
+# Accepted review MAE: about 22.98.
+video_frame_mae	GROMOV-FINALE-APPEARS	gromov-essential-directions.mp4	13.85	14.85	50	650	440	190	10	255
