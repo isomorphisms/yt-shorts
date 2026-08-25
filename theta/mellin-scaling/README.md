@@ -35,6 +35,16 @@ ysh theta/mellin-scaling/render --preview
 
 The first 540×960 review render is committed as [`theta-mellin-scaling-preview.mp4`](theta-mellin-scaling-preview.mp4). The same source and entry point produced the inspected 1080×1920 render; that larger generated file remains under `media/` rather than being duplicated in Git.
 
+## Finished-video acceptance
+
+[`video.contract.tsv`](video.contract.tsv) applies the finished-video verifier
+from `isomorphisms/ai-ci` to the committed review render. It checks the encoded
+file's shape, timing, audio policy, codec, and pixel format. Its three frame
+contracts are deliberately specific to this episode: the graph compresses from
+`n = 1` to `n = 3`, the graph and `1/9` witnesses hold during the named freeze,
+and the `u = 9x` substitution appears afterward. The selected times, rectangles,
+and MAE thresholds live here; they are not general rules for motion or pacing.
+
 The muted pink, gold, green, cyan, and violet are phase samples from the HCL constants in the renderer-independent coloring core of [`isomorphisms/wegert`](https://github.com/isomorphisms/wegert), pinned here to commit `6452974f7fdb63a933c849d068d10f2d87fbefe5`. They are used as a semantic palette, not as a claim that a positive real Gaussian has several complex phases.
 
 ## Source and credit
