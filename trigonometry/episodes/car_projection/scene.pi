@@ -170,11 +170,12 @@ class CarProjection55mph(Scene):
             Transform(across, across_10),
             Transform(radial, radial_10),
             Transform(angle_arc, angle_arc_10),
-            Transform(angle_label, angle_label_10),
-            Transform(values, values_10),
+            FadeOut(angle_label),
+            FadeOut(values),
             run_time=1.00,
         )
-        self.wait(0.70)
+        self.play(FadeIn(angle_label_10), FadeIn(values_10), run_time=0.20)
+        self.wait(0.50)
 
         across_20 ∈ Line ← Line(center, [1.362554, 0.55, 0.0], color=yellow, stroke_width=4)
         radial_20 ∈ Line ← Line([1.362554, 0.55, 0.0], [1.362554, 1.045929, 0.0], color=green, stroke_width=5)
@@ -209,11 +210,12 @@ class CarProjection55mph(Scene):
             Transform(across, across_20),
             Transform(radial, radial_20),
             Transform(angle_arc, angle_arc_20),
-            Transform(angle_label, angle_label_20),
-            Transform(values, values_20),
+            FadeOut(angle_label_10),
+            FadeOut(values_10),
             run_time=1.00,
         )
-        self.wait(0.70)
+        self.play(FadeIn(angle_label_20), FadeIn(values_20), run_time=0.20)
+        self.wait(0.50)
 
         across_30 ∈ Line ← Line(center, [1.255737, 0.55, 0.0], color=yellow, stroke_width=4)
         radial_30 ∈ Line ← Line([1.255737, 0.55, 0.0], [1.255737, 1.275, 0.0], color=green, stroke_width=5)
@@ -248,11 +250,12 @@ class CarProjection55mph(Scene):
             Transform(across, across_30),
             Transform(radial, radial_30),
             Transform(angle_arc, angle_arc_30),
-            Transform(angle_label, angle_label_30),
-            Transform(values, values_30),
+            FadeOut(angle_label_20),
+            FadeOut(values_20),
             run_time=1.00,
         )
-        self.wait(0.85)
+        self.play(FadeIn(angle_label_30), FadeIn(values_30), run_time=0.20)
+        self.wait(0.65)
 
         geometry ∈ VGroup ← VGroup(
             viewer_axis,
@@ -269,8 +272,8 @@ class CarProjection55mph(Scene):
             across,
             radial,
             angle_arc,
-            angle_label,
-            values,
+            angle_label_30,
+            values_30,
         )
         self.play(FadeOut(geometry), run_time=0.40)
         self.play(FadeOut(subtitle), run_time=0.20)
