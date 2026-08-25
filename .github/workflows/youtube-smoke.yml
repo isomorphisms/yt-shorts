@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Enforce ai-ci consumer contracts
-        uses: isomorphisms/ai-ci@04e896e3e4156173c6f3cbfd42a3d055a46512c3
+        uses: isomorphisms/ai-ci@95f81aca4b545d4718f4791ec26f24a661fecc6b
         with:
           suite: ci/ai-ci/suite.tsv
           root: .
@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: isomorphisms/ai-ci
-          ref: 04e896e3e4156173c6f3cbfd42a3d055a46512c3
+          ref: 95f81aca4b545d4718f4791ec26f24a661fecc6b
           path: .ai-ci
       - name: Checkout Grease
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
