@@ -34,10 +34,40 @@ The CI consumer pins:
 
 - Manimi: `e4f8ab7b7033052787ee7561de67b63b68ddb2dd`
 - Ithon: `2e0d634550ecf2eb78315c2c165fe0e85ea1980c`
+- ai-ci finished-video verifier: `1ecde1ff3bcea2de371e9198ef49aad8d1f91315`
 
 This is intentionally a dogfood test of Manimi's current checked-Ithon boundary. Much of the engine beneath the checked `.pi` scene is still foreign Python during the staged Manimi rewrite; this episode does not claim otherwise.
 
-The CI render is a 540×960, 30 fps review encode. A later finishing pass can raise resolution after the scene itself is stable.
+The review render is 540×960, 30 fps, H.264/yuv420p, silent, and 16.366667 seconds. A later finishing pass can raise resolution after the scene itself is stable.
+
+The workflow performs the Ithon static check before installing the renderer dependencies. The check loads Ithon's checker modules explicitly rather than putting Ithon's forked `Lib/` ahead of the host Python standard library.
+
+## First-render inspection
+
+The first successful render exposed presentation defects that a codec/shape check would not catch:
+
+- the long distance-scale caption reached the right edge;
+- the “essential directions” conclusion crowded the persistent curvature hypothesis;
+- `Circle(color=...)` and `Dot(color=...)` did not produce the intended rendered stroke/fill colors at the pinned Manimi head.
+
+The corrected scene shortens/repositions the affected text and uses explicit `stroke_color=` for circles and `fill_color=` for dots. The corrected render was then inspected as a contact sheet across the main beats: the captions fit, the tangent-space circle is muted rather than red, the critical points have their intended colors, and the final ball cover has distinct cyan/green/yellow circles.
+
+## Finished-video gate
+
+`video.contract.tsv` owns this episode's visual witnesses. They are not universal motion rules.
+
+The exact corrected render passes 10 assertions:
+
+- decode;
+- 540×960 dimensions;
+- 16.25–16.50 second duration window (actual 16.366667);
+- 30 fps;
+- no audio;
+- H.264/yuv420p;
+- rejected-angle panel → separated-angle panel changes, MAE 3.308687;
+- the collision/fan beat really holds, MAE 0.326138;
+- “essential directions” visibly appears, MAE 22.010281;
+- the final consequence visibly appears after the cover, MAE 22.980905.
 
 ## Visual sequence
 
