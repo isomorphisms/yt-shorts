@@ -4,6 +4,7 @@ from manimlib import Dot
 from manimlib import FadeIn
 from manimlib import FadeOut
 from manimlib import Line
+from manimlib import Rotate
 from manimlib import Scene
 from manimlib import ShowCreation
 from manimlib import Text
@@ -136,19 +137,6 @@ class CarProjection55mph(Scene):
         self.play(FadeIn(values), run_time=0.30)
         self.wait(0.70)
 
-        road_10 ∈ Line ← Line(
-            [-1.969616, 0.202704, 0.0],
-            [1.969616, 0.897296, 0.0],
-            color=muted,
-            stroke_width=30,
-        )
-        lane_10 ∈ Line ← Line(
-            [-1.969616, 0.202704, 0.0],
-            [1.969616, 0.897296, 0.0],
-            color=ink,
-            stroke_width=2,
-        )
-        actual_10 ∈ Line ← Line(center, [1.427971, 0.801790, 0.0], color=cyan, stroke_width=10)
         across_10 ∈ Line ← Line(center, [1.427971, 0.55, 0.0], color=yellow, stroke_width=4)
         radial_10 ∈ Line ← Line([1.427971, 0.55, 0.0], [1.427971, 0.801790, 0.0], color=green, stroke_width=5)
         angle_arc_10 ∈ Arc ← Arc(
@@ -176,9 +164,9 @@ class CarProjection55mph(Scene):
         values_10.move_to([0.0, 2.05, 0.0])
 
         self.play(
-            Transform(road, road_10),
-            Transform(lane, lane_10),
-            Transform(actual, actual_10),
+            Rotate(road, angle=0.174532925, about_point=center),
+            Rotate(lane, angle=0.174532925, about_point=center),
+            Rotate(actual, angle=0.174532925, about_point=center),
             Transform(across, across_10),
             Transform(radial, radial_10),
             Transform(angle_arc, angle_arc_10),
@@ -188,19 +176,6 @@ class CarProjection55mph(Scene):
         )
         self.wait(0.70)
 
-        road_20 ∈ Line ← Line(
-            [-1.879385, -0.134040, 0.0],
-            [1.879385, 1.234040, 0.0],
-            color=muted,
-            stroke_width=30,
-        )
-        lane_20 ∈ Line ← Line(
-            [-1.879385, -0.134040, 0.0],
-            [1.879385, 1.234040, 0.0],
-            color=ink,
-            stroke_width=2,
-        )
-        actual_20 ∈ Line ← Line(center, [1.362554, 1.045929, 0.0], color=cyan, stroke_width=10)
         across_20 ∈ Line ← Line(center, [1.362554, 0.55, 0.0], color=yellow, stroke_width=4)
         radial_20 ∈ Line ← Line([1.362554, 0.55, 0.0], [1.362554, 1.045929, 0.0], color=green, stroke_width=5)
         angle_arc_20 ∈ Arc ← Arc(
@@ -228,9 +203,9 @@ class CarProjection55mph(Scene):
         values_20.move_to([0.0, 2.05, 0.0])
 
         self.play(
-            Transform(road, road_20),
-            Transform(lane, lane_20),
-            Transform(actual, actual_20),
+            Rotate(road, angle=0.174532925, about_point=center),
+            Rotate(lane, angle=0.174532925, about_point=center),
+            Rotate(actual, angle=0.174532925, about_point=center),
             Transform(across, across_20),
             Transform(radial, radial_20),
             Transform(angle_arc, angle_arc_20),
@@ -240,19 +215,6 @@ class CarProjection55mph(Scene):
         )
         self.wait(0.70)
 
-        road_30 ∈ Line ← Line(
-            [-1.732051, -0.45, 0.0],
-            [1.732051, 1.55, 0.0],
-            color=muted,
-            stroke_width=30,
-        )
-        lane_30 ∈ Line ← Line(
-            [-1.732051, -0.45, 0.0],
-            [1.732051, 1.55, 0.0],
-            color=ink,
-            stroke_width=2,
-        )
-        actual_30 ∈ Line ← Line(center, [1.255737, 1.275, 0.0], color=cyan, stroke_width=10)
         across_30 ∈ Line ← Line(center, [1.255737, 0.55, 0.0], color=yellow, stroke_width=4)
         radial_30 ∈ Line ← Line([1.255737, 0.55, 0.0], [1.255737, 1.275, 0.0], color=green, stroke_width=5)
         angle_arc_30 ∈ Arc ← Arc(
@@ -280,9 +242,9 @@ class CarProjection55mph(Scene):
         values_30.move_to([0.0, 2.05, 0.0])
 
         self.play(
-            Transform(road, road_30),
-            Transform(lane, lane_30),
-            Transform(actual, actual_30),
+            Rotate(road, angle=0.174532925, about_point=center),
+            Rotate(lane, angle=0.174532925, about_point=center),
+            Rotate(actual, angle=0.174532925, about_point=center),
             Transform(across, across_30),
             Transform(radial, radial_30),
             Transform(angle_arc, angle_arc_30),
