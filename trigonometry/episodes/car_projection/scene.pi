@@ -1,0 +1,373 @@
+from manimlib import Arc
+from manimlib import Circle
+from manimlib import Dot
+from manimlib import FadeIn
+from manimlib import FadeOut
+from manimlib import Line
+from manimlib import Rotate
+from manimlib import Scene
+from manimlib import ShowCreation
+from manimlib import Text
+from manimlib import Transform
+from manimlib import VGroup
+from manimlib import Write
+
+
+class CarProjection55mph(Scene):
+    def construct(self ∈ CarProjection55mph) → None:
+        ink ← "#F2F2EC"
+        muted ← "#6F737C"
+        cyan ← "#58C8E8"
+        yellow ← "#F2C14E"
+        green ← "#8FD694"
+        font ← "DejaVu Sans"
+
+        title ∈ Text ← Text(
+            "55 mph. Rotate the road.",
+            font=font,
+            font_size=39,
+            color=ink,
+        )
+        title.set_width(3.80)
+        title.move_to([0.0, 3.48, 0.0])
+
+        subtitle ∈ Text ← Text(
+            "speed stays fixed; projection changes",
+            font=font,
+            font_size=22,
+            color=cyan,
+        )
+        subtitle.set_width(3.65)
+        subtitle.move_to([0.0, 3.02, 0.0])
+
+        self.play(Write(title), run_time=0.55)
+        self.play(FadeIn(subtitle), run_time=0.30)
+
+        center ← [0.0, 0.55, 0.0]
+        viewer ← [0.0, -2.30, 0.0]
+
+        viewer_axis ∈ Line ← Line(viewer, center, color=muted, stroke_width=3)
+        viewer_dot ∈ Dot ← Dot(viewer, radius=0.075, fill_color=ink)
+        viewer_label ∈ Text ← Text("viewer", font=font, font_size=20, color=ink)
+        viewer_label.move_to([0.0, -2.58, 0.0])
+
+        radial_axis_label ∈ Text ← Text(
+            "radial axis",
+            font=font,
+            font_size=18,
+            color=green,
+        )
+        radial_axis_label.move_to([-0.60, -1.25, 0.0])
+
+        across_axis_label ∈ Text ← Text(
+            "across view",
+            font=font,
+            font_size=18,
+            color=yellow,
+        )
+        across_axis_label.move_to([1.30, 0.18, 0.0])
+
+        speed_circle ∈ Circle ← Circle(
+            radius=1.45,
+            stroke_color=muted,
+            stroke_width=2,
+        )
+        speed_circle.move_to(center)
+
+        center_dot ∈ Dot ← Dot(center, radius=0.070, fill_color=ink)
+
+        self.add(viewer_axis)
+        self.add(viewer_dot)
+        self.add(viewer_label)
+        self.add(radial_axis_label)
+        self.add(across_axis_label)
+        self.play(FadeIn(speed_circle), run_time=0.30)
+
+        road ∈ Line ← Line(
+            [-2.00, 0.55, 0.0],
+            [2.00, 0.55, 0.0],
+            color=muted,
+            stroke_width=30,
+        )
+        lane ∈ Line ← Line(
+            [-2.00, 0.55, 0.0],
+            [2.00, 0.55, 0.0],
+            color=ink,
+            stroke_width=2,
+        )
+        car ∈ Dot ← Dot(center, radius=0.10, fill_color=ink)
+
+        actual ∈ Line ← Line(center, [1.45, 0.55, 0.0], color=cyan, stroke_width=10)
+        across ∈ Line ← Line(center, [1.45, 0.55, 0.0], color=yellow, stroke_width=4)
+        radial ∈ Line ← Line([1.45, 0.55, 0.0], [1.45, 0.555, 0.0], color=green, stroke_width=5)
+        angle_arc ∈ Arc ← Arc(
+            radius=0.38,
+            start_angle=0.0,
+            angle=0.001,
+            arc_center=center,
+            color=ink,
+            stroke_width=4,
+        )
+
+        angle_label ∈ Text ← Text(
+            "road rotation α = 0°",
+            font=font,
+            font_size=25,
+            color=ink,
+        )
+        angle_label.move_to([0.0, 2.42, 0.0])
+
+        values ∈ Text ← Text(
+            "across 55.0 mph   ·   radial 0.0 mph",
+            font=font,
+            font_size=21,
+            color=ink,
+        )
+        values.set_width(3.70)
+        values.move_to([0.0, 2.05, 0.0])
+
+        self.play(ShowCreation(road), run_time=0.35)
+        self.add(lane)
+        self.play(FadeIn(car), run_time=0.15)
+        self.play(ShowCreation(actual), run_time=0.35)
+        self.play(ShowCreation(across), run_time=0.25)
+        self.play(FadeIn(center_dot), run_time=0.10)
+        self.add(radial)
+        self.play(FadeIn(angle_label), run_time=0.20)
+        self.play(FadeIn(values), run_time=0.30)
+        self.wait(0.70)
+
+        across_10 ∈ Line ← Line(center, [1.427971, 0.55, 0.0], color=yellow, stroke_width=4)
+        radial_10 ∈ Line ← Line([1.427971, 0.55, 0.0], [1.427971, 0.801790, 0.0], color=green, stroke_width=5)
+        angle_arc_10 ∈ Arc ← Arc(
+            radius=0.38,
+            start_angle=0.0,
+            angle=0.174532925,
+            arc_center=center,
+            color=ink,
+            stroke_width=4,
+        )
+        angle_label_10 ∈ Text ← Text(
+            "road rotation α = 10°",
+            font=font,
+            font_size=25,
+            color=ink,
+        )
+        angle_label_10.move_to([0.0, 2.42, 0.0])
+        values_10 ∈ Text ← Text(
+            "across 54.2 mph   ·   radial 9.6 mph",
+            font=font,
+            font_size=21,
+            color=ink,
+        )
+        values_10.set_width(3.70)
+        values_10.move_to([0.0, 2.05, 0.0])
+
+        self.play(
+            Rotate(road, angle=0.174532925, about_point=center),
+            Rotate(lane, angle=0.174532925, about_point=center),
+            Rotate(actual, angle=0.174532925, about_point=center),
+            Transform(across, across_10),
+            Transform(radial, radial_10),
+            Transform(angle_arc, angle_arc_10),
+            FadeOut(angle_label),
+            FadeOut(values),
+            run_time=1.00,
+        )
+        self.play(FadeIn(angle_label_10), FadeIn(values_10), run_time=0.20)
+        self.wait(0.50)
+
+        across_20 ∈ Line ← Line(center, [1.362554, 0.55, 0.0], color=yellow, stroke_width=4)
+        radial_20 ∈ Line ← Line([1.362554, 0.55, 0.0], [1.362554, 1.045929, 0.0], color=green, stroke_width=5)
+        angle_arc_20 ∈ Arc ← Arc(
+            radius=0.38,
+            start_angle=0.0,
+            angle=0.349065850,
+            arc_center=center,
+            color=ink,
+            stroke_width=4,
+        )
+        angle_label_20 ∈ Text ← Text(
+            "road rotation α = 20°",
+            font=font,
+            font_size=25,
+            color=ink,
+        )
+        angle_label_20.move_to([0.0, 2.42, 0.0])
+        values_20 ∈ Text ← Text(
+            "across 51.7 mph   ·   radial 18.8 mph",
+            font=font,
+            font_size=21,
+            color=ink,
+        )
+        values_20.set_width(3.70)
+        values_20.move_to([0.0, 2.05, 0.0])
+
+        self.play(
+            Rotate(road, angle=0.174532925, about_point=center),
+            Rotate(lane, angle=0.174532925, about_point=center),
+            Rotate(actual, angle=0.174532925, about_point=center),
+            Transform(across, across_20),
+            Transform(radial, radial_20),
+            Transform(angle_arc, angle_arc_20),
+            FadeOut(angle_label_10),
+            FadeOut(values_10),
+            run_time=1.00,
+        )
+        self.play(FadeIn(angle_label_20), FadeIn(values_20), run_time=0.20)
+        self.wait(0.50)
+
+        across_30 ∈ Line ← Line(center, [1.255737, 0.55, 0.0], color=yellow, stroke_width=4)
+        radial_30 ∈ Line ← Line([1.255737, 0.55, 0.0], [1.255737, 1.275, 0.0], color=green, stroke_width=5)
+        angle_arc_30 ∈ Arc ← Arc(
+            radius=0.38,
+            start_angle=0.0,
+            angle=0.523598776,
+            arc_center=center,
+            color=ink,
+            stroke_width=4,
+        )
+        angle_label_30 ∈ Text ← Text(
+            "road rotation α = 30°",
+            font=font,
+            font_size=25,
+            color=ink,
+        )
+        angle_label_30.move_to([0.0, 2.42, 0.0])
+        values_30 ∈ Text ← Text(
+            "across 47.6 mph   ·   radial 27.5 mph",
+            font=font,
+            font_size=21,
+            color=ink,
+        )
+        values_30.set_width(3.70)
+        values_30.move_to([0.0, 2.05, 0.0])
+
+        self.play(
+            Rotate(road, angle=0.174532925, about_point=center),
+            Rotate(lane, angle=0.174532925, about_point=center),
+            Rotate(actual, angle=0.174532925, about_point=center),
+            Transform(across, across_30),
+            Transform(radial, radial_30),
+            Transform(angle_arc, angle_arc_30),
+            FadeOut(angle_label_20),
+            FadeOut(values_20),
+            run_time=1.00,
+        )
+        self.play(FadeIn(angle_label_30), FadeIn(values_30), run_time=0.20)
+        self.wait(0.65)
+
+        geometry ∈ VGroup ← VGroup(
+            viewer_axis,
+            viewer_dot,
+            viewer_label,
+            radial_axis_label,
+            across_axis_label,
+            speed_circle,
+            center_dot,
+            road,
+            lane,
+            car,
+            actual,
+            across,
+            radial,
+            angle_arc,
+            angle_label_30,
+            values_30,
+        )
+        self.play(FadeOut(geometry), run_time=0.40)
+        self.play(FadeOut(subtitle), run_time=0.20)
+
+        summary_title ∈ Text ← Text(
+            "same speed · different components",
+            font=font,
+            font_size=28,
+            color=cyan,
+        )
+        summary_title.set_width(3.65)
+        summary_title.move_to([0.0, 2.55, 0.0])
+
+        header_angle ∈ Text ← Text("α", font=font, font_size=22, color=ink)
+        header_angle.move_to([-1.55, 1.95, 0.0])
+        header_across ∈ Text ← Text("across", font=font, font_size=20, color=yellow)
+        header_across.move_to([-0.30, 1.95, 0.0])
+        header_radial ∈ Text ← Text("radial", font=font, font_size=20, color=green)
+        header_radial.move_to([1.25, 1.95, 0.0])
+
+        row_0_angle ∈ Text ← Text("0°", font=font, font_size=22, color=ink)
+        row_0_angle.move_to([-1.55, 1.35, 0.0])
+        row_0_across ∈ Text ← Text("55.0 mph", font=font, font_size=22, color=yellow)
+        row_0_across.move_to([-0.30, 1.35, 0.0])
+        row_0_radial ∈ Text ← Text("0.0 mph", font=font, font_size=22, color=green)
+        row_0_radial.move_to([1.25, 1.35, 0.0])
+
+        row_10_angle ∈ Text ← Text("10°", font=font, font_size=22, color=ink)
+        row_10_angle.move_to([-1.55, 0.80, 0.0])
+        row_10_across ∈ Text ← Text("54.2 mph", font=font, font_size=22, color=yellow)
+        row_10_across.move_to([-0.30, 0.80, 0.0])
+        row_10_radial ∈ Text ← Text("9.6 mph", font=font, font_size=22, color=green)
+        row_10_radial.move_to([1.25, 0.80, 0.0])
+
+        row_20_angle ∈ Text ← Text("20°", font=font, font_size=22, color=ink)
+        row_20_angle.move_to([-1.55, 0.25, 0.0])
+        row_20_across ∈ Text ← Text("51.7 mph", font=font, font_size=22, color=yellow)
+        row_20_across.move_to([-0.30, 0.25, 0.0])
+        row_20_radial ∈ Text ← Text("18.8 mph", font=font, font_size=22, color=green)
+        row_20_radial.move_to([1.25, 0.25, 0.0])
+
+        row_30_angle ∈ Text ← Text("30°", font=font, font_size=22, color=ink)
+        row_30_angle.move_to([-1.55, -0.30, 0.0])
+        row_30_across ∈ Text ← Text("47.6 mph", font=font, font_size=22, color=yellow)
+        row_30_across.move_to([-0.30, -0.30, 0.0])
+        row_30_radial ∈ Text ← Text("27.5 mph", font=font, font_size=22, color=green)
+        row_30_radial.move_to([1.25, -0.30, 0.0])
+
+        formula_across ∈ Text ← Text(
+            "across = 55 cos α",
+            font=font,
+            font_size=25,
+            color=yellow,
+        )
+        formula_across.move_to([0.0, -1.25, 0.0])
+
+        formula_radial ∈ Text ← Text(
+            "radial = 55 sin α",
+            font=font,
+            font_size=25,
+            color=green,
+        )
+        formula_radial.move_to([0.0, -1.75, 0.0])
+
+        fixed_speed ∈ Text ← Text(
+            "actual speed = 55 mph every time",
+            font=font,
+            font_size=20,
+            color=ink,
+        )
+        fixed_speed.set_width(3.55)
+        fixed_speed.move_to([0.0, -2.45, 0.0])
+
+        table ∈ VGroup ← VGroup(
+            header_angle,
+            header_across,
+            header_radial,
+            row_0_angle,
+            row_0_across,
+            row_0_radial,
+            row_10_angle,
+            row_10_across,
+            row_10_radial,
+            row_20_angle,
+            row_20_across,
+            row_20_radial,
+            row_30_angle,
+            row_30_across,
+            row_30_radial,
+        )
+
+        self.play(FadeIn(summary_title), run_time=0.35)
+        self.play(FadeIn(table), run_time=0.60)
+        self.play(Write(formula_across), run_time=0.35)
+        self.play(Write(formula_radial), run_time=0.35)
+        self.play(FadeIn(fixed_speed), run_time=0.30)
+        self.wait(1.10)
