@@ -1,0 +1,51 @@
+name: Commit Pearcey preview
+
+on:
+  push:
+    branches:
+      - pearcey-wegert-t-build
+    paths:
+      - "Eli's wiggert calendar/Trevor Pearcey/render_pearcey.py"
+      - "Eli's wiggert calendar/Trevor Pearcey/revise_preview.py"
+      - "third_party/wegert"
+      - ".gitmodules"
+      - ".github/workflows/pearcey-commit-preview.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install render dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libegl1 libgl1-mesa-dri fonts-dejavu-core fonts-stix
+          python -m pip install numpy pillow matplotlib
+      - name: Render base field
+        env:
+          EGL_PLATFORM: surfaceless
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: python "Eli's wiggert calendar/Trevor Pearcey/render_pearcey.py"
+      - name: Render repository preview
+        run: python "Eli's wiggert calendar/Trevor Pearcey/revise_preview.py" --small
+      - name: Commit repository preview
+        # Keep a phone-sized reviewable draft on the branch without vendoring the full render.
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add "Eli's wiggert calendar/Trevor Pearcey/pearcey-T-build-wegert-v2-small.mp4"
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Update Pearcey animation preview"
+          git push

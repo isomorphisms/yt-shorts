@@ -1,0 +1,51 @@
+name: Pearcey Wegert render
+
+on:
+  pull_request:
+    paths:
+      - "Eli's wiggert calendar/Trevor Pearcey/**"
+      - "third_party/wegert"
+      - ".gitmodules"
+      - ".github/workflows/pearcey-render.yml"
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install render dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libegl1 libgl1-mesa-dri fonts-dejavu-core fonts-stix
+          python -m pip install numpy pillow matplotlib
+      - name: Render Pearcey T-build
+        env:
+          EGL_PLATFORM: surfaceless
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: python "Eli's wiggert calendar/Trevor Pearcey/render_pearcey.py"
+      - name: Build revised presentation
+        run: |
+          python "Eli's wiggert calendar/Trevor Pearcey/revise_preview.py"
+          python "Eli's wiggert calendar/Trevor Pearcey/revise_preview.py" --small
+      - name: Validate Pearcey math and revised sequence
+        env:
+          EGL_PLATFORM: surfaceless
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: python "Eli's wiggert calendar/Trevor Pearcey/validate_render.py"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pearcey-wegert-t-build
+          path: |
+            Eli's wiggert calendar/Trevor Pearcey/pearcey-T-build-wegert.mp4
+            Eli's wiggert calendar/Trevor Pearcey/pearcey-T-build-wegert-v2.mp4
+            Eli's wiggert calendar/Trevor Pearcey/pearcey-T-build-wegert-v2-small.mp4
+            Eli's wiggert calendar/Trevor Pearcey/pearcey-final-frame.png
+          if-no-files-found: error
